@@ -9,6 +9,8 @@ From our experience, far too much time is lost slogging through the minutiae -- 
 
 ## Getting Started
 
+Note: while this is a public repo, it shouldn't be indexed by google.
+
 *[todo]* Explain how to run the automated tests for this system
 
 
