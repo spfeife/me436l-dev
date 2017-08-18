@@ -1,0 +1,483 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PACKAGES  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+% Fonts & Colors
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[usenames,dvipsnames,x11names,table]{xcolor}
+
+% Math 
+\usepackage{amsmath,amsthm}
+\usepackage{amsfonts,eucal,amssymb,amscd,empheq,bm,mathtools}
+\usepackage{mathrsfs}
+\usepackage{calc} 
+
+% Tikz & boxes
+\usepackage{tikz}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{framed}
+
+% interface for floats (Figures/Tables), allows 'H' option
+\usepackage{float}
+
+% expanded footnote package
+\usepackage{bigfoot}
+
+% refinements 
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+\usepackage[pdftex,colorlinks=false]{hyperref}
+\usepackage{url}
+
+\usepackage{enumerate}
+\usepackage{listings}
+\usepackage{marginnote}
+\usepackage{mparhack}
+
+\usepackage{longtable}
+\usepackage[labelfont=bf,indention=0cm]{caption}
+\usepackage{subcaption}
+
+\usepackage{verbatim}
+\usepackage[makeroom]{cancel}
+
+\usepackage{geometry}
+\usepackage[most]{tcolorbox}
+
+\usepackage[parfill]{parskip}
+\setlength{\parskip}{6pt} 
+\setlength{\parindent}{0pt}
+
+\hypersetup{pdftex, colorlinks, citecolor=blue, filecolor=blue, linkcolor=blue, urlcolor=blue}
+\usepackage{tabularx}
+
+\usepackage{bookmark}
+\usepackage[lite]{amsrefs}
+\usepackage{arydshln}
+
+\usepackage{booktabs}
+\newcounter{lecnum}
+\usepackage{nicefrac}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+
+% markup / notes
+%\usepackage{todonotes} \usepackage[textwidth=3.7cm]{
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny,textwidth=\linewidth-20pt]{todonotes}
+\usepackage{xargs} 
+\usepackage[linesnumbered,ruled,vlined,commentsnumbered]{algorithm2e}
+
+% set geometry
+\geometry{margin=1in}
+%\geometry{verbose=true,top=0.75in,bottom=1.00in,left=1.25in,right=1.25in,heightrounded,driver=pdftex,headsep=30pt}
+
+\setlength{\marginparwidth}{4cm}
+\setlength{\marginparsep}{2em}
+
+% MATLAB / Verbatim
+\usepackage[numbered,framed]{matlab-prettifier}
+
+
+\definecolor{light-gray}{gray}{0.99}
+
+\set{style= Matlab-editor,
+    basicstyle = \mlttfamily\footnotesize,
+    breaklines=true,
+    backgroundcolor=\color{light-gray},
+    numbersep=5pt,
+    xleftmargin=.25in,
+    xrightmargin=.25in 
+} 
+
+
+
+\pagestyle{fancy}
+\PassOptionsToPackage{normalem}{ulem}
+\makeindex
+\setlength{\headheight}{12pt}
+
+% left-align section{1} 
+%\makeatletter
+%\def\section{\@startsection{section}{1}
+%  \z@{.7\linespacing\@plus\linespacing}{.2\linespacing}
+%  {\normalfont\scshape\bfseries}}
+%\makeatother
+
+% title setup
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \vspace*{0mm}      % remove the initial space
+  \begingroup\centering    % instead of \begin{center}
+  \let \footnote \thanks
+  \hrule height \z@        % to avoid the insertion of lineskip glue
+    {\huge \@title \par}%
+    \vskip 1.5em 
+    {\large
+      \lineskip .5em 
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em 
+    {\large \@date}%
+  \par\endgroup            % instead of \end{center}
+  \vskip -2.5cm             % <--- modify this to adjust the separation
+}
+\makeatother
+
+
+\fancyfoot[C]{\fontsize{9}{12} \selectfont \vspace{12pt} \textit{\footnotesize{\thepage}}}
+
+% setup header
+\renewcommand{\headrulewidth}{.5pt}
+\fancyhead{} % clear all header fields
+\newcommand{\lecture}[3]{
+   \pagestyle{fancy}   
+   \noindent
+	\fancyhead[L]{\fontsize{9}{12} \selectfont \textit{\footnotesize{#1}}}
+	\fancyhead[R]{\fontsize{9}{12} \selectfont \textit{\footnotesize{#3}}}
+	\fancyhead[C]{\fontsize{9}{12} \selectfont \textit{\footnotesize{#2}}}
+\mpL{#1: #3}
+}
+
+\newcommand{\sethead}[1]{
+\fancyhead[C]{\fontsize{9}{12} \selectfont \textit{\footnotesize{#1}}}
+}
+
+
+%
+%\renewcommand{\todo}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+
+\newcommandx{\start}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+\newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+\newcommandx{\thiswillnotshow}[2][1=]{\todo[disable,#1]{#2}}
+%
+
+
+
+% for adjustwidth environment
+\usepackage[strict]{changepage}
+
+% for formal definitions
+\usepackage{framed}
+
+% environment derived from framed.sty: see leftbar environment definition
+\definecolor{formalshade}{rgb}{0.95,0.95,1}
+\definecolor{darkBlue}{RGB}{25,25,112}
+
+\newenvironment{formal}{%
+  \def\FrameCommand{%
+    \hspace{1pt}%
+    {\color{darkBlue}\vrule width 2pt}%
+    {\color{formalshade}\vrule width 4pt}%
+    \colorbox{formalshade}%
+  }%
+  \MakeFramed{\advance\hsize-\width\FrameRestore}%
+  \noindent\hspace{-4.55pt}% disable indenting first paragraph
+  \begin{adjustwidth}{}{7pt}%
+  \vspace{-12pt}
+  %\vspace{2pt}\vspace{2pt}%
+}
+{%
+  \vspace{2pt}\end{adjustwidth}\endMakeFramed%
+}
+
+
+
+%%% TCBOX
+
+
+\tcbset{
+  highlight math style={
+    enhanced,
+    colframe=Gray!50,
+    colback=red!5,
+    boxrule=0.25pt,
+  }
+}
+
+% boxed equations
+\newenvironment{boxedeq}{\empheq[box=\tcbhighmath]{equation}}{\endempheq}
+\newenvironment{boxedeq*}{\empheq[box=\tcbhighmath]{equation*}}{\endempheq}
+
+
+
+
+
+
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% colors
+\colorlet{shadecolor}{Red!5}
+\colorlet{framecolor}{Red!1}
+\definecolor{dkred}{RGB}{165,0,0}
+
+
+% general def
+\newcommand{\defn}[1]{\vspace{0mm}\noindent {\bd{\ul{#1}}}}
+
+
+% margin notes
+\newcommand{\mpL}[1]{\reversemarginpar\marginnote{\hspace{3mm}\raggedleft \textcolor{dkred}{\textit{\scriptsize{#1}}}}[1cm]}
+
+
+
+
+% format/layout adjustments
+\newcommand{\n}{\vskip 10pt \noindent}
+\newcommand{\nn}{\vspace{8mm} \noindent}
+\newcommand{\ns}{\vspace{8mm}}
+
+% font
+\newcommand{\ul}[1]{\underline{#1}}
+\renewcommand{\it}[1]{\textit{#1}}
+\newcommand{\bd}[1]{\textbf{#1}}
+\newcommand{\bul}[1]{\textbf{\ul{#1}}}
+\newcommand{\bit}[1]{\textbf{\textit{#1}}}
+
+
+
+\newtheoremstyle{break}%
+{}{}%
+{\addtolength{\leftskip}{1.5em}}{-1.5em}%
+{\bfseries}{}%
+{ }%
+{\thmname{#1}\thmnumber{ #2} \thmnote{: \textnormal{#3}}}%
+
+%\theoremstyle{definition}
+%\newtheorem{defn}{Definition}
+%\newtheorem{reg}{Rule}
+%\newtheorem{exer}{Exercise}
+%\newtheorem{note}{Note}
+
+
+\theoremstyle{break}
+\newtheorem{example}{Example}[section]
+
+\mdfdefinestyle{mystyle}{
+  hidealllines=true,
+  leftline=true,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=10pt,
+}
+
+
+\newmdtheoremenv[style=mystyle]{example2}{Example}
+
+
+
+
+\theoremstyle{definition}
+\newtheorem{defnn}{Definition}
+\newtheorem*{tst*}{}
+\newmdtheoremenv[style=mystyle]{defnn2}{Definition}
+
+\newtheorem*{Alg*}{Algorithm}
+\newtheorem*{rmk*}{Remark}
+\newtheorem*{thm}{Theorem}
+\newcommand{\Recall}{\vspace{4mm}\noindent \bd{\ul{Recall}}}
+\newcommand{\Note}{\vspace{4mm}\noindent \bd{\ul{Note}}}
+\newcommand{\Question}{\vspace{4mm}\noindent \bd{\ul{Question}}}
+
+\newcommand{\Problem}[1]{\vspace{4mm}\noindent {\large\bd{\ul{Problem #1}}}}
+
+\let\oldsec\section
+\renewcommand{\section}[1]{\oldsec{\underline{#1}}}
+
+\let\oldsecc\subsubsection
+\renewcommand{\subsubsection}[1]{\oldsecc{\bit{#1}}}
+
+%%%%%%      MATH ENVIRONMENT      %%%%%%%%
+
+% align
+\newcommand{\eq}[1]{\begin{align*}#1\end{align*}}
+
+% tags
+\newcommand{\tagit}[1]{\tag{\it{#1}}}
+\newcommand{\tagitb}[1]{\textcolor{blue}{\tag{\it{#1}}}}
+
+% Binary operators 
+\newcommand{\plus}{\raisebox{.2\height}{\scalebox{.8}{+}}}      			% text small plus
+\newcommand{\minus}{\raisebox{.2\height}{\scalebox{.8}{-}}}
+\newcommand{\mypm}{\raisebox{.2\height}{\scalebox{.8}{$\pm$}}}
+
+\newcommand{\+}{\texttt{+}}									% math small plus
+\renewcommand{\-}{\texttt{-}}
+\renewcommand{\=}{\texttt{=}}
+
+% math commands
+\def\mean#1{\left< #1 \right>}    									% mean brackets
+\newcommand{\norm}[1]{\lVert #1 \rVert}  							% norm
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}							% abs
+
+% sets
+\newcommand{\setn}[1]{#1_1,\ldots,#1_n}							% t_1 ... t_n
+\newcommand{\setk}[2]{#1_1,\ldots,#1_#2}						
+\newcommand{\bsetn}[1]{\{#1_1,\ldots,#1_n\}}						%{ t_1 ... t_n }
+\newcommand{\bsetk}[2]{\{#1_1,\ldots,#1_#2\}}
+
+% vectors and matricies
+\def\vec#1{\bm{\bar{#1}}}			% vector
+\def\mat#1{\bm{#1}}   			% matrix
+%\renewcommand{\vec}[1]{\mathbf{#1}}   % vector bold
+
+% fractions
+\newcommand{\h}{\frac{1}{2}}
+
+% scale math symbols or eqns
+\newcommand{\Scale}[2][4]{\raisebox{-.2\height}{\scalebox{#1}{\ensuremath{#2}}}}
+
+% shortcuts for letters, symbols & etc
+\def\nhat{\bm{\hat{n}}}
+
+\newcommand{\Z}{{\mathbb{Z}}}
+\newcommand{\R}{{\mathbb{R}}}
+\newcommand{\N}{{\mathbb{N}}}
+\newcommand{\F}{{\mathcal{F}}}
+\newcommand{\C}{{\mathcal{C}}}
+\newcommand{\W}{{\mathcal{W}}}
+\newcommand{\E}{{\mathcal{E}}}
+\newcommand{\A}{{\mathcal{A}}}
+\newcommand{\X}{{\mathbb{X}}}
+
+
+%%%%% BOXED EQUATIONS %%%%%%%
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+% shading
+\newenvironment{frshaded}{
+ \def\FrameCommand{\fboxrule=\FrameRule\fboxsep=\FrameSep \fcolorbox{framecolor}{shadecolor}}%
+ \MakeFramed{\FrameRestore}}%
+ {\endMakeFramed}
+
+ \newenvironment{frshaded*}{%
+ \def\FrameCommand{\fboxrule=\FrameRule\fboxsep=2\FrameSep \fcolorbox{framecolor}{shadecolor}}%
+ \MakeFramed{\advance \hsize - \width \FrameRestore}}%
+  {\endMakeFramed}
+
+
+
+% horizontal & vertical lines
+\newcommand*{\vertbar}{\rule[-1ex]{0.5pt}{2.5ex}}
+\newcommand*{\horzbar}{\rule[.5ex]{3ex}{0.5pt}}
+
+
+
+%%%%%%      SHORTCUTS     %%%%%%%%
+\newcommand{\dt}{{\Delta t}}
+\newcommand{\dx}{{\Delta x}}
+\newcommand{\idt}{{\frac{1}{\Delta t}}}
+\newcommand{\idx}{{\frac{1}{\Delta x}}}
+\newcommand{\dtdx}{\frac{\Delta t}{\Delta x}}
+\newcommand{\dxdt}{\frac{\Delta x}{\Delta t}}
+
+\newcommand{\Qin}{{Q_{i}^{n} }}
+\newcommand{\Qini}{{Q_{i}^{n \+ 1} }}
+\newcommand{\Qimi}{{Q_{i}^{n \- 1} }}
+\newcommand{\Qinp}[1]{{Q_{i}^{n \+ #1} }}
+
+\newcommand{\qx}{q_{,x}}
+\newcommand{\qxx}{q_{,x,x}}
+\newcommand{\qt}{q_{,t}}
+\newcommand{\qtt}{q_{,t,t}}
+
+\newcommand{\ordii}{\ord( \dx^2)}
+\newcommand{\ordiii}{\ord( \dx^3)}
+
+\renewcommand{\uplus}{u^{\+}}
+\newcommand{\uminus}{u^{\-}}
+
+\newcommand{\Fii}[2]{\F_{ i \+ \h}^{n \+ \h}}
+\newcommand{\Fnn}[2]{\F_{ #1}^{#2}}
+\newcommand{\FF}{\Scale[1.4]{\mathscr{F}}}
+
+\newcommand{\sumN}{\sum_{i \= 1}^{N} }
+\newcommand{\summ}{\sum_{p \= 1}^{m} }
+\newcommand{\suminf}{\sum_{i \= -\infty}^{\infty} }
+
+\newcommand{\ord}{{\mathcal{O}}}
+\newcommand{\into}{\rightarrow}
+
+\newcommand{\stari}{\raisebox{.2\height}{\scalebox{0.9}{\ensuremath{\hspace{0.25mm} \star}}}}
+
+
+\newcommand{\lp}{\lambda^{(p)}}
+
+%% SUPERSCRIPTS
+\newcommand{\soln}{\it{sol}\textsuperscript{\ul{\it{n}}}}
+\newcommand{\Soln}{\it{Sol}\textsuperscript{\ul{\it{n}}}}
+\newcommand{\eqn}{\it{eq}\textsuperscript{\ul{\it{n}}}}
+\newcommand{\Eqn}{\it{Eq}\textsuperscript{\ul{\it{n}}}}
+
+\newcommand{\st}{\textsuperscript{\ul{\it{st}}} }
+\newcommand{\nd}{\textsuperscript{\ul{\it{nd}}} }
+
+% create a matrix: use &, \\ as normal
+\newcommand{\mtx}[1]{\left(\begin{matrix}#1\end{matrix}\right)}
+
+
+%%%%% EQUATIONS  %%%%%%
+
+\newcommand{\burgers}{\eq{  q_{,t} + \Big( \h q^2 \Big)_{,x} = 0 }} 			% Burger's Eqn
+
+
+
+
+
+
+%%%%% GRAPHICS %%%%%
+\newcommand{\gfxi}[1]{
+\vspace{3mm}
+  \begin{center}
+    \begin{figure}[h!]
+    \includegraphics[height=45mm]{#1}
+    \end{figure}
+  \end{center}
+}
+
+\newcommand{\gfxii}[2]{
+\vspace{3mm}
+  \begin{center}
+    \begin{figure}[h!]
+    \includegraphics[height=#1mm]{#2}
+    \end{figure}
+  \end{center}
+}
+
+% figure + equation/text, side by side
+\newcommand{\gfxss}[2]{
+\vspace{3mm}
+\noindent\begin{minipage}{.45\textwidth}
+ 	\centering
+   		\includegraphics[height=45mm]{#1}
+  		\label{fig:figure}
+\end{minipage}
+\begin{minipage}{.45\textwidth}
+#2
+\end{minipage}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

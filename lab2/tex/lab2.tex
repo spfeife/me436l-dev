@@ -1,0 +1,542 @@
+\documentclass[11pt, letterpaper]{article} 
+\input{include/structure.sty} 
+\graphicspath{{./gfx/}}
+
+\usepackage[boxed]{algorithm2e}
+
+
+\definecolor{light-gray}{gray}{0.98}
+\usepackage[bottom]{footmisc}
+
+\usepackage{siunitx}
+\usepackage{xfrac}
+
+\title{ \textsc{Prelab Exercise 2: \\ Extended Surfaces} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
+
+\begin{document}
+\date{}
+\maketitle
+\thispagestyle{firstpage} 
+
+
+
+
+\section*{Introduction}
+
+The primary objective of this experiment is to theoretically and experimentally study an \it{extended surface} subjected to varying environmental conditions. More specifically, a heated cylindrical rod, lined with evenly-spaced thermocouples,  will be examined under passive, medium, and high air flow rates - simulating free, medium, and high convective conditions. The temperature distributions and heat transfer rates will be calculated using three separate models; the most accurate of which will ultimately be selected. Finally, performance metrics are used to assess the effectiveness and efficiency of the extended rod for use as a fin.
+\n
+This pre-lab assignment will act as a guide towards creating a mathematical model before attending lab --  saving critical in-class time for performing experiments and analyzing data. 
+
+\section*{Prerequisites}
+Before attempting this pre-lab assignment, it is imperative that you:
+{\small
+\begin{itemize}
+    \item Review \bit{textbook section 3.6}, particularly \bit{Table 3.4} \it{(pg. 161)},
+    \item Review \bit{experiment procedures}, and
+    \item Watch the \bit{pre-lab videos} on Blackboard (Bb).
+\end{itemize}
+}
+
+\section*{Getting Started}
+First, if you have not already, you will need to download the starter code from Bb (located in the `Lab 2' directory) and unzip its contents into the directory where you wish to complete the exercise. Be sure to have completed all of the prerequisites before attempting this assignment.
+
+\subsection*{Files included in this exercise:}
+Once you have unzipped the contents of the starter package, you should have the following files:
+
+\begin{itemize}
+\renewcommand\labelitemi{-- }
+   \item \bd{\texttt{ex2.m}}
+    \item \texttt{/lib}
+    \item  \texttt{caseA.m}
+\renewcommand\labelitemi{[$\star$]}
+    \item \texttt{caseB.m}
+    \item \texttt{caseD.m} 
+    \item \texttt{calc\_eta.m} 
+    \item \texttt{calc\_epsilon.m} 
+\renewcommand\labelitemi{[$\dag$]}
+    \item \texttt{ex2\_rad.m} 
+    \item \texttt{calc\_rad.m}
+    \item \texttt{calc\_conv.m}  
+\end{itemize}
+
+\noindent
+$\star$ indicates files that you will need to complete.\\
+$\dag$ indicates files that are optional.
+
+\n
+Throughout this pre-lab exercise, you will be using the script \bd{\texttt{ex2.m}}, but will only be required to edit \bit{one section}, in which you will need to enter material properties, defined in the \bit{laboratory procedures}.
+
+
+\setcounter{section}{-1}
+\section{Environment Setup}
+Before we can get started, we need to setup our MATLAB environment properly. As always, if using the laboratory computers, be sure to be running your code from the \texttt{C:\textbackslash temp} directory, and also make sure you have unzipped your code properly. Otherwise you may receive `\texttt{./lib not found}' errors.
+
+\subsection{MATLAB Script Outline}
+
+Once your environment is setup, open the file named \bd{\texttt{ex2.m}} and read the instructions at the top of the script. In short, this script will plot your data and fit the math models described in \bit{Table 3.4} to your collected dataset. A brief outline of the script is shown below, followed by a more detailed line-by-line explanation.
+\n
+
+\IncMargin{1em}
+\begin{algorithm}[t]
+\SetKw{Set}{Set: }
+\SetKw{Call}{Call: }
+\SetKw{Load}{\emph{load: }}
+\SetKwComment{cc}{\% }{ }
+\SetKw{Plot}{Plot: }
+\SetKw{Print}{Print: }
+
+    \emph{clear; close all}\;
+    \Set{path to data}\;
+    \Set{properties}\;
+    \BlankLine
+    \For{$i = 1$ \KwTo 3,}{\label{forins}
+      \Load{excel dataset(i)}\;
+      \Indp \texttt{[dat]} $\leftarrow$ \texttt{xlsread(path)}\;
+      \Indm \Set{average SS temps}\;
+      \Indp\texttt{[Tm]} $\leftarrow$ \texttt{mean(dat)}\;
+         \BlankLine
+          \Indm\Set{theoretical temps}\;
+       \Indp $[T_A, q_A ]\leftarrow $ \texttt{caseA()}\;
+        $[T_B, q_B] \leftarrow $ \textcolor{dkred}{\texttt{caseB()*}}\;
+        $[T_D, q_D] \leftarrow $ \textcolor{dkred}{\texttt{caseD()*}}\;
+         \BlankLine
+         \Indm \Set{performance}\;
+        \Indp $ \eta  \leftarrow $ \textcolor{dkred}{\texttt{calc\_eta()*}}\;
+         $ \epsilon  \leftarrow $ \textcolor{dkred}{\texttt{calc\_epsilon()*}}\;
+     }
+     \Plot{ $T_{A,B,D}$ vs. $T_{m}$}\;
+     \Print{ $q$ \& $\epsilon$, $\eta $} to screen\;
+\end{algorithm}
+
+
+Now, in the MATLAB editor, scroll down to the \texttt{SETUP} section. This portion of the script is where the paths to our data are set. More specifically, \texttt{pDIR} is the \it{folder} in which \bit{all three datasets} are stored. You may provide the absolute path to the folder, or simply drag and drop your data into the \texttt{./data} folder.
+\n
+
+\begin{center}
+\begin{tcolorbox}[enhanced, width=14cm, size=tight, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
+\n
+{\small
+\bit{Note:} - When performing the experiment, make sure you have \bit{all three sets of data} collected before running this script.
+}
+\end{tcolorbox}
+\end{center}
+
+As written, this script locates the data`\texttt{data}' folder and grabs \bit{all excel files} therein. The command \texttt{dir( [... '/*.xlsx'])} returns the directory (path), of each file that ends with \texttt{.xlsx}. This is denoted by the `\texttt{ *.xlsx}' syntax, in which the `\texttt{*}' is a \it{wildcard} command meaning, in this case, \it{`grab everything with the following suffix'}. 
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[numbers=none]
+%% SETUP
+% set path to folder containing excel sheets
+pDIR = './data';
+
+% grab all excel files in directory
+xl_files = dir( [pDIR '/*.xlsx']);
+NX = length(xl_files);
+\end{lstlisting}
+\end{minipage}
+\n
+The Excel sheet paths are then stored and will be used later in the \it{loop} section. Next, we have a few \it{string} variables that will be used for plotting later. It's important that these are set correctly.
+
+\begin{lstlisting}[numbers=none]
+% plot title
+titles{1,1} = 'Temperature Distribution: h = 9 [W/m^2 C]';
+titles{1,2} = 'Temperature Distribution: h = 30 [W/m^2 C]';
+titles{1,3} = 'Temperature Distribution: h = 40 [W/m^2 C]';
+
+% export figure name
+str_print{1,1} = 'h_09';
+str_print{1,2} = 'h_30';
+str_print{1,3} = 'h_40';
+% set station numbers for each dataset
+st = {'1';'3';'5';};
+\end{lstlisting}
+\n
+
+\Note: The \it{wildcard} command `\texttt{ * }' will automatically sort your filenames based on numerical/alphabetical order. Hence, be sure to name your excel sheets accordingly, so that the titles above are correct.  
+
+\section{Input Properties}
+
+Now, we must input a few properties from the experiment procedures
+
+\begin{lstlisting}[numbers=none]
+%% =========== Part 1: Input Properties ============= 
+% From the procedures document, fill in all of the necessary info
+\end{lstlisting}
+
+First, we \it{define} a few global variables. These are special variables that once set, will always be available to us. That is, we don't need to pass them in/out of functions.
+\begin{lstlisting}[numbers=none]
+% set globals
+global D k P L Ac Af T_inf
+\end{lstlisting}
+
+Now, we arrive to the \it{fin properties} section. 
+\n
+\textcolor{dkred}{\bit{To do:}} \it{Using information provided in the procedures document, locate and correct the incorrect values:}
+\n
+\begin{lstlisting}[numbers=none]
+% Fin Properties **FIX ME**
+h = [9, 30, 40];             % [W/m^2 C]
+D = 1;                       % (Diameter) [m]
+k = 400;                     % (Conductivity, Brass) [W/m C]
+P = pi * D;                  % (Perimeter) [m]
+L = 1;                       % (Length of fin) [m]
+Ac = 1;                      % (Cross Sectional Area) [m^2]
+Af = pi * D * L;             % (Fin Surface Area) [m^2]
+
+% Set Tinf -- as measured in lab
+T_inf = 23.5;     % [C]
+\end{lstlisting}
+
+\n
+\bit{Note:} The \texttt{Ac} and \texttt{Af} values refer to the \it{cross-sectional area} and \it{total fin surface area}, respectively. These also need to be set correctly. Once this is done, we can move on to the main loop.
+
+\section{Plotting Loop}
+
+This section now uses a simple \texttt{For-Loop} to process each data set automatically. While there are six stations in the lab, this assumes only \bit{three are being processed at once.}
+\n
+As you walk through the inner-workings of the main loop, much of this should look familiar. You do not need to do anything here, but be sure to understand what is being done.
+
+\n
+\begin{lstlisting}[numbers=none]
+%% =========== Part 2: Loop over data & Plot ============= 
+
+% loop over stations
+for ii = 1:3 
+\end{lstlisting}
+
+\n
+\subsection{Plotting: Cases A, B, D}
+
+However, once we get down to the following lines:
+\n
+\begin{lstlisting}[numbers=none]
+% The fin excess temperatures
+theta_x = Tm - T_inf;
+theta_b = Tb - T_inf;
+\end{lstlisting}
+
+We are now ready to set our \it{theoretical} temperature distributions, as defined by three boundary conditions (BC) at $(x=L)$, shown in \bit{Table 3.4}.
+
+\begin{itemize}
+    \item [--] \bit{Case A}: Convective BC,
+    \item [--] \bit{Case B}: Adiabatic BC,
+    \item [--] \bit{Case D}: Infinite Length BC.
+\end{itemize} 
+
+Functions for each of these cases are implemented in the code below:
+\n
+\begin{lstlisting}[numbers=none]
+% m & M
+M = sqrt((h(ii) * P * k * Ac)) * theta_b;
+m = ((h(ii) * P) / (k * Ac))^0.5;
+mL = m * L;
+h_mk = h(ii)/(m*k);
+
+% Case A
+[TA, qA(ii)] = caseA(x, theta_b, m, M, h(ii));
+
+% Case B
+[TB, qB(ii)] = caseB(x, theta_b, m, M);
+
+% Case D
+[TD, qD(ii)] = caseD(x, theta_b, m, M);
+\end{lstlisting}
+
+\n
+Here, we are setting the values from \bit{Table 3.4 from the textbook}. In summary, we are now inserting the equations the \it{temperature distribution}, $T(x)$ and the \it{heat rate}, $q_f$.  The quantities \texttt{m} \& \texttt{M} have already been defined. What still needs to be done, is for you to complete \bit{Cases B and D}; Case A has already been done as an example.
+\n
+To complete this portion of the exercise, open the files \bit{\texttt{caseB.m}} \& \bit{\texttt{caseD.m}} to complete the expressions below:
+\n
+
+\begin{lstlisting}[numbers=none]
+function [T, q] = caseD(x,theta_b, m, M)
+% CASED() Calculates fin temperature distribution and heat rate (see table
+% 3.4 in text.)
+\end{lstlisting}
+
+\begin{lstlisting}[numbers=none]
+% ====================== YOUR CODE HERE ======================
+% Instructions: Provide two expressions: Temperature distribution, T, and
+% heat rate, q, from Table 3.4.
+%
+% Note: you will need to solve for T, not theta/theta_b
+% Temperature Distributio 
+T = ????
+
+% Heat Rate
+q = ???
+\end{lstlisting}
+\begin{center}
+\begin{tcolorbox}[enhanced, width=14cm, size=tight, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
+\n
+{\small
+\bit{Note:}
+\begin{itemize}
+    \item The function is provided with the following input quantities: \texttt{x, theta\_b, m, M}. Hence, you \bit{do not} need to define them, just \it{use} them. \bit{See \texttt{caseA.m} as an example.}
+    \item In addition, the \bit{global} values are available for you to use as well, you do not need to define them. \bit{See \texttt{caseA.m} as an example.}
+    \item The function requires a return value of \bit{temperature, $T$}, \bit{not} the \it{Excess Temperature, $\theta / \theta_b$}. Hence, you will need to do a little algebra to solve for $T$.
+\end{itemize}
+}
+\end{tcolorbox}
+\end{center}
+
+\subsection{Efficiency \& Effectiveness}
+
+Next, as a way to evaluate the performance of each fin, we compute \bit{fin effectiveness} and the \bit{fin efficiency}:
+
+\begin{lstlisting}[numbers=none]
+% efficiency (eta)
+eta_A(ii) = calc_eta(qA(ii), theta_b, h(ii));
+eta_B(ii) = calc_eta(qB(ii), theta_b, h(ii));
+eta_D(ii) = calc_eta(qD(ii), theta_b, h(ii));
+
+% effectiveness (epsilon)
+ep_A(ii) = calc_epsilon(qA(ii), theta_b, h(ii));
+ep_B(ii) = calc_epsilon(qB(ii), theta_b, h(ii));
+ep_D(ii) = calc_epsilon(qD(ii), theta_b, h(ii));
+\end{lstlisting}
+
+\n
+Your task is to open \bit{\texttt{calc\_eta.m}} and \bit{\texttt{calc\_epsilon.m}} and complete these functions.
+\n
+
+\n
+Now, if everything was done correctly, upon running \bd{\texttt{ex2.m}}, you should have something similar to Fig.~\ref{fig1} below.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/h09.png}
+    \caption{Natural Convection: h = 9 $(W/m^2 C)$}\label{fig1}
+    \end{center}
+\end{figure}
+
+\n
+In addition, your code should have printed several lines to the command line. To gauge whether your code is correct, you should have:
+
+\begin{lstlisting}[numbers=none]
+ Effectiveness [-]:
+ 
+    Station    CaseA     CaseB     CaseD 
+    _______    ______    ______    ______
+    '1'        70.264    70.181    73.333
+    '3'        40.095    40.091    40.166
+    '5'        34.764    34.763    34.785
+
+\end{lstlisting}
+
+
+\n
+\section{Export Figures \& Deliverables}
+
+Now, lets export our figures to PNGs. To do so, scroll down to the following line:
+
+\begin{lstlisting}[numbers=none]
+    % print figs
+    %print(['figs/' str_print{1,ii}], '-dpng','-r200');
+\end{lstlisting}
+
+\n
+Uncomment the second line above. That is, you should see:
+\begin{lstlisting}[numbers=none]
+    % print figs
+    print(['figs/' str_print{1,ii}], '-dpng','-r200');
+\end{lstlisting}
+\n
+Now, once you re-run your script, this will export several PNGs and save them into the \texttt{./figs} folder.
+
+\begin{formal}
+    \begin{deliv} \bit{Export Figures:  } 
+In a word processor (\it{MS Word, Pages, Open Office, or equivalent}) insert the three PNG images that you just produced  (\it{i.e.,} \texttt{h\_09.png, h\_30.png, h\_40.png}).  Then, \bit{write 1-2 sentences} describing the similarities/differences between each figure.
+    \end{deliv}
+\end{formal}
+
+\begin{formal}
+    \begin{deliv} \bit{Cmd Output:  } 
+Next, copy/paste the output from the MATLAB Command Window  (\it{i.e.,} the tables showing Heat rate, error, efficiency, and effectiveness)
+    \end{deliv}
+\end{formal}
+
+Once these deliverables are completed, print out your document and hand it in at the beginning of class.
+
+\n
+\hrule
+
+\section{Radiation (Optional)}
+
+This section is optional and will not be graded as part of the pre-lab assignment. However, since we will be using it throughout the experiment, it has been included.
+\n
+
+In this experiment, we are primarily interested in studying the effects of conduction and convection for an \it{extended surface}. That is, heat is transferred through the extended rod via conduction, and is presumed to be dissipated via convection. However, we know that radiation always plays a large role in this too. The question we now seek to answer is \bit{how large} of a role does radiation play? Particularly in relation to \it{convection}. In the sections that follow, we will estimate and compare the heat dissipated via convection and radiation for each of the experiment setups studied above.
+
+\n
+\subsection{Background: Radiation}
+
+First, we take a look at the experiment through the lens of an infrared camera, as seen below:
+
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/FLIR.png}
+    \caption{FlIR Camera output}\label{fig2}
+    \end{center}
+\end{figure}
+
+\n
+This image shows us that we are dissipating a considerable amount of heat near the LHS of the apparatus; particularly along the first three thermocouples. In order to quantify this heat dissipation, lets make a few `\it{back of the envelope}' estimates.
+
+\n
+First, lets assume that radiation may be reasonably computed using the following equation:
+\begin{equation}
+q_{rad} = \epsilon \sigma A_s ( T_{avg}^4 - T_\infty^4 ) \ . \label{Eq1}
+\end{equation}
+
+\n
+In which, $\sigma = \SI{5e-5}{(\watt\cdot\meter^{\text{-}2}\cdot\kelvin^{\text{-}4})} $, is the Stefan-Boltzmann constant, $\epsilon$ is the emissivity, $A_s$, the surface area, and $T_{avg}$, is the average material temperature, and $T_\infty$ refers to the surroundings (all units are standard metric).
+\n
+Now, since the \it{heat rate}, $q$, is essentially the integral of our temperature distribution over a given area, lets make \it{broad stroke} estimates for $A_s$ and $T_{avg}$: lets use an average temperature $T_{avg}$, collected over an area covering only the first \bul{ $1/3$ of the rod length.} This is easily done using the `\it{boxed averaging}' tool included with the FLIR Camera Toolset. Concretely, we assume $A_s$ is computed by:
+\eq{
+A_s = \pi D ( \sfrac{1}{3} L ) \ .
+}
+\n
+When using the FLIR camera, isolating only this section gives us more confidence in our $T_{avg}$ value, rather than averaging over the length of the rod. In addition, this allows us to use the simplified equation above, which only uses an averaged temperature, $T_{avg}$.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/FLIR2.png}
+    \caption{FlIR Tools: Boxed Averaging}\label{fig3}
+    \end{center}
+\end{figure}
+
+If we were to sketch this out on paper, our estimate would look similar to the image below.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=90mm]{gfx/sketch.png}
+    \caption{Estimated heat rate}\label{fig4}
+    \end{center}
+\end{figure}
+
+As you can see here, the \it{actual} temperature distribution is an exponential curve. While we could integrate this numerically (since we have the FLIR data), at the moment we're only interested in a quick \it{estimate}. Hence, the above approximation should be sufficient.
+
+\n
+\subsection{Background: Convection}
+
+Now, since we have assumed that all other losses are negligible (\it{i.e.,} conduction, uncertainty in system \&, \it{etc.}), we can use the same arguments made above to estimate the losses due to convection. That is, lets assume that the following equation is sufficient:
+\begin{equation}
+q_{conv} = h A_s ( T_{avg} - T_\infty ) \ .\label{Eq2}
+\end{equation}
+
+\n
+In which $ A_s = \pi D ( \sfrac{1}{3} L )$, $h$ is the convection coefficient, $T_{avg}$ is again our \it{box-averaged} temperature. 
+
+\n
+\subsection{Implementation}
+
+Now, let's implement the above in MATLAB. When completed, you should have a bar graph that resembles:
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=120mm]{gfx/rad_estimation.png}
+    \caption{Estimated heat rate for each station}\label{fig5}
+    \end{center}
+\end{figure}
+
+\n
+First, open the file \bd{\texttt{ex2\_rad.m}}. As before, make sure the script can find your data. Be sure that your paths are correct:
+
+\begin{lstlisting}[numbers=none]
+%% SETUP
+% set path to folder containing excel sheets
+pDIR = './data';
+
+% grab all excel files in directory
+xl_files = dir( [pDIR '/*.xlsx']);
+NX = length(xl_files);
+\end{lstlisting}
+\n
+Next, we set several properties:
+
+\begin{lstlisting}[numbers=none]
+% Fin Properties 
+h = [9, 30, 40];             % [W/m^2 C]
+D = 0.01;                    % (Diameter) [m]
+
+% Surface area -- Note: we assume 1/3 of the length!
+L = 0.33 * 0.35;
+As = pi * 0.01 * L;
+
+% boltzmann
+sigma = 5.67e-8;            % [W/(m^2 K^4)]
+\end{lstlisting}
+
+All of the above should be sufficient for our work. However, the next few lines may need to be changed:
+\begin{lstlisting}[numbers=none]
+% calibrated ep from FLIR camera (0.78 - 0.82)
+ep = 0.82;
+
+% Set Tinf -- as measured in lab
+Tinf = 23.5 + 273;     % [K]
+\end{lstlisting}
+
+When performing the experiment, you will need to adjust the ambient air temperature, $T_{\inf}$ as well as the emissivity (information on this will be provided at a later point -- for now, the default value will work fine).
+
+\n
+
+Now, we begin the loop over all data sets.
+\begin{lstlisting}[numbers=none]
+% loop over stations
+for ii = 1:3
+...
+\end{lstlisting}
+
+\n
+The only lines that you need to be concerned with are the following:
+
+\begin{lstlisting}[numbers=none]
+% radiation & convection estimations
+q_rad(ii) = calc_rad(T);
+q_conv(ii)= calc_conv(T,h(ii));
+\end{lstlisting}
+
+To get this working, you need to pen \bd{\texttt{calc\_rad.m}} \& \bd{\texttt{calc\_conv.m}} and insert Eq. \ref{Eq1} \& Eq. \ref{Eq2}, respectively. If executed correctly you should obtain Fig. \ref{fig5} above, as well as the following command line output:
+
+\n
+\begin{lstlisting}[numbers=none]
+ Heat Transfer Rate [W]:
+ 
+    Station    CONV      RAD     PCT_RAD
+    _______    _____    _____    _______
+    'Free'     1.015    0.639    38.6   
+    'Med'      2.971     0.55    15.6   
+    'High'     3.764     0.52    12.1 
+\end{lstlisting}
+
+\subsection{Conclusions}
+
+Tabulating the above results, we can now clearly see the relative impact of neglecting radiation for each station. The apparent trend is that as the convection coefficient increases, radiation plays a lesser role
+
+\definecolor{Gray}{gray}{0.95}
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\begin{center}
+{\small
+\begin{tabular}{l|ccg}
+Station & Conv. [W] & Rad. [W] & Pct Rad. \\ [0.25em]
+  \hline
+  \it{Free} & 1.0  & 0.7 & \bit{38.6} \% \\
+  \it{Med} & 3.0 & 0.6  & \bit{15.6} \% \\
+  \it{High} & 3.8 & 0.5 & \bit{12.1} \%
+\end{tabular}
+}
+\end{center}
+
+\n
+
+\begin{formal}
+    \begin{deliv} \bit{In-class assignment } 
+Based upon the results above is it acceptable to neglect radiation for any of the above cases? Justify your answer.
+    \end{deliv}
+\end{formal}
+
+
+\end{document}

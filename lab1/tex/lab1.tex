@@ -1,0 +1,356 @@
+\documentclass[11pt, letterpaper]{article} 
+\input{include/structure.sty} 
+\graphicspath{{./gfx/}}
+
+\definecolor{light-gray}{gray}{0.98}
+\usepackage[bottom]{footmisc}
+
+\usepackage{siunitx}
+
+\title{ \textsc{Prelab Exercise 1: \\ Linear Heat Conduction} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
+
+\begin{document}
+\date{}
+\maketitle
+\thispagestyle{firstpage} 
+
+
+
+
+\section*{Introduction}
+
+The objective of this experiment is to explore \it{Fourier’s Law} for linear conduction by studying steady-state heat transfer through various materials. Completion of this pre-lab assignment will provide you with the necessary tools to properly study and explore the data you will collect in lab.
+
+\section*{Prerequisites}
+Before attempting this pre-lab assignment, it is imperative that you have:
+{\small
+\begin{itemize}
+    \item Reviewed the \bit{textbook sections:} 2.1, 2.2 \& 3.1-3.1.4,
+    \item Reviewed the \bit{experiment procedures}, 
+    \item Watched the \bit{pre-lab videos} on Blackboard (Bb), and
+    \item Completed the \bit{pre-lab quiz} on Bb.
+\end{itemize}
+}
+
+\section*{Getting Started}
+First, you will always need to download the starter code from Bb (located in the lab directory) and unzip its contents to the directory where you wish to complete the exercise. Be sure to have completed all of the prerequisites before attempting this assignment.
+
+\subsection*{Files included in this exercise:}
+Once you have unzipped the contents of the starter package, you should have the following files:
+
+\begin{itemize}
+\renewcommand\labelitemi{-- }
+   \item \texttt{ex1.m}
+    \item \texttt{/lib}
+\renewcommand\labelitemi{[$\star$]}
+    \item \texttt{plotData.m}
+    \item \texttt{calc\_ks.m}
+    \item \texttt{fouriers\_law.m} 
+    \item \texttt{calc\_contact\_res.m} 
+\end{itemize}
+
+\noindent
+$\star$ indicates files that you will need to complete.\\
+
+\n
+Throughout this exercise, you will be using the script \texttt{ex1.m}, but will not be required to make any major modifications to it. You are only required to modify the functions \textit{(often only 1-2 lines of code)} in the files specified above. Your submission will consist of a compilation (via word processor) of \textit{'deliverables'}, each resembling the following:
+\setcounter{deliv}{-1}
+\begin{formal}
+    \begin{deliv} \bit{Sample}s
+    
+Follow the instructions in this blue box.
+    \end{deliv}
+\end{formal}
+
+
+\setcounter{section}{-1}
+\section{Warm-Up \& System Check}
+
+Before starting, it's often a good idea understand the data by first visualizing it. This section will walk you through the essentials of doing so. \textit{If you have any difficulties getting started, be sure to ask your TA for assistance.} \n
+
+\noindent
+First, open the Matlab script \texttt{ex1.m} and read through the instructions. The section immediately following clears the workspace and initializes our paths and raw data variable. Next, we get the to \textit{Load Data} section, in which a sample dataset is loaded into the variable \texttt{M}:
+\n
+\begin{lstlisting}[numbers=none]
+% load tab separated data
+M = load('data.txt'); 
+\end{lstlisting}
+\n
+Now, we have a matrix $M$ of size $93 \times 11$ ($rows \times columns$), or $M \in \mathbb{R}^{93 \times 11}$. The columns in $M$ correspond to:
+\\
+{\small
+\begin{center}\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|c | c | c | c | c | c | c |}
+\hline
+\rowcolor{light-gray}
+    1 & 2 & 3 & \dots & 9 & 10 & 11 \\ 
+    \hline
+   \cellcolor{green!10} $time (s)$ & \cellcolor{red!10}$TC_1$ & \cellcolor{red!10}$TC_2$ & \cellcolor{red!10}$\dots$ & \cellcolor{red!10}$TC_8$ & \cellcolor{orange!10}$Voltage, V$ & \cellcolor{orange!10}$Current, A$ \\ 
+\hline
+\end{tabular}
+\end{center}
+}
+
+Separating these columns into more meaningful variables:\footnote{\textit{Note: if you are not familiar with the syntax, check out: \href{https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html}{Matrix indexing in Matlab}  }}
+\n
+\begin{lstlisting}[numbers=none]
+t = M(:,1);         % get time vector, [s]
+dat = M(:,2:9);     % get temps, [C]
+V = M(:,10);        % Voltage, [V]
+I = M(:,11);        % Current, [A]
+\end{lstlisting}
+
+\n
+Now let's plot our temperatures with time:
+
+\n
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[numbers=none]
+figure;         % open new figure
+h = plot(dat);  % plot the data
+set(h, 'LineStyle', '-', 'LineWidth', 2)   % make sure the lines are readable
+\end{lstlisting}
+\end{minipage}
+
+\n
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[numbers=none]
+% don't forget to add labels!!
+xlabel('Time [s]');
+ylabel('Temperature [C]');
+title('Transient Data, T/C','FontSize',16);
+grid on
+\end{lstlisting}
+\end{minipage}
+
+\n
+Now, if everything was done correctly, you should get something similar to Fig.~\ref{fig1} below.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/fig1.png}
+    \caption{Transient temperature data}\label{fig1}
+    \end{center}
+\end{figure}
+
+A few quick questions to ask:
+
+\begin{formal}
+\begin{quest} \bit{Sanity Check.}
+\begin{itemize}
+    \item Does your plot match Fig.~\ref{fig1} above? 
+    \item \it{Are you using the correct version of \texttt{MATLAB}?} 
+    \item Is all of our data at steady-state?
+\end{itemize}
+\end{quest}
+\end{formal}
+\begin{center}
+\begin{tcolorbox}[enhanced, width=14cm, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
+\n
+{\small
+\bit{Checkpoint} - If you had any difficulties obtaining Fig.~\ref{fig1}, \bul{stop here} and contact your Lab Instructor. You may run into more troubles ahead.
+}
+\end{tcolorbox}
+
+\end{center}
+
+When you're ready to continue, comment out the following line:
+
+\n
+\begin{lstlisting}[numbers=none]
+% remove break
+break_msg; dbstack; return;
+\end{lstlisting}
+
+\n
+\hrule
+
+\section{Plot Data}
+
+Now, let's plot the steady-state data. First, we need to take an average of each column in $M$ - that is, we're finding the average temperature over time. This is done for you using the \texttt{mean( )} command.
+
+\n
+Next, we call a \texttt{plotData.m} function to plot our steady-state data. However, \textit{this plot function is incorrect and will not run. Your task is to fix it:}
+
+\begin{itemize}
+    \item Open \texttt{plotData.m} 
+    \item Adjust code accordingly to obtain Fig.~\ref{fig2} below:
+\end{itemize}
+
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/fig2.png}
+    \caption{Transient temperature data}\label{fig2}
+    \end{center}
+\end{figure}
+
+Then, if everything was done correctly in part 1a, you should arrive at a figure that resembles Fig.~\ref{fig3} below.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/fig3.png}
+    \caption{Steady-state T/C data}\label{fig3}
+    \end{center}
+\end{figure}
+
+Here, we have added regression lines that extend slightly beyond their representative data points --- until they reach a midpoint.  This vertical intersection line dividing the two regression lines, is the \textit{theoretical} point of contact between the two sections. Since we physically can't place a thermocouple at the very edge of each material, these \textit{extrapolated} temperature values are the best we can do. We'll revisit these values when we discuss the contact resistance.
+
+\begin{formal}
+    \begin{deliv} \bit{Steady-state T/C plot} (Fig.~\ref{fig3} above) 
+    
+   Export your figure to an image: \texttt{File >> Export Setup >> Export}, and include it in your submission.
+    \end{deliv}
+\end{formal}
+
+\n
+\hrule
+\section{Calculate Sample Thermal Conductivity, $k_s$}
+
+In this exercise, you will calculate the thermal conductivity, $k_s$, of the unknown specimen. This computation is only made possible by one critical assumption: \it{we can safely assume that a \ul{constant heat flux} passes through the entire linear conduction apparatus.} Let's quickly revisit how this is possible.
+
+\subsection{Background}
+Assume that we have a generic plane-wall, like that shown to the right. Recall from your lecture notes and p113 of the textbook, \it{\ul{one form} of the heat equation} may be written as:
+\eq{
+\frac{d}{dx} \Big( k \frac{dT}{dx} \Big) = 0 \tag{\it{Heat Equation}}
+}
+\begin{minipage}[c]{0.50\textwidth}
+{\small
+Rewriting:
+\eq{ 
+k \frac{d^2 T}{dx^2} = 0
+}
+Integrating twice, boundary conditions:
+\begin{align}
+    T(x) &= (T_2 - T_1) \frac{x}{L} + T_1
+\end{align}
+with slope:
+\eq{
+dT/dx = \frac{(T_2 - T_1)}{L}
+}
+}
+\end{minipage}  \hfill
+\begin{minipage}[c]{0.50\linewidth}
+\hspace{0mm}
+\vspace{-2ex}
+    \includegraphics[width=70mm]{gfx/fig4.png}
+\vspace{2pt}
+\captionof{figure}{Some figure}
+\end{minipage}
+
+Plugging into Fourier's Law:
+
+\eq{
+q_x &= -k A \frac{dT}{dx} \\
+& = \frac{k A}{L} ( T_1 - T_2)
+}
+
+Finally, the \it{heat flux} is
+\begin{align}
+    q_x^{\prime\prime} = \frac{k}{L} (T_1 - T_2)
+\end{align}
+
+From Eqns. (1) \& (2) we've shown that the temperature profile is \bit{linear} and the heat flux is \bit{constant}, independent of $x$. 
+
+\n
+Now, consider the simple composite wall below. Since the heat flux is constant throughout, we can say:
+
+
+
+
+
+
+\begin{minipage}[c]{0.50\textwidth}
+{\small
+\begin{center}
+\begin{tcolorbox}[enhanced, width=5cm, top=-4mm, colback=red!5, colframe=black!50!white, boxrule=0.5pt, boxsep=1.5mm, bottom=1mm]
+\eq{
+q^{\prime\prime}_1 &= q_2^{\prime\prime} \\
+- k_1 \Big( \frac{dT}{dx} \Big)_1 &= - k_2 \Big( \frac{dT}{dx} \Big)_2
+}
+\end{tcolorbox}
+\end{center}
+}
+\end{minipage}  \hfill
+\begin{minipage}[c]{0.50\linewidth}
+\hspace{-5mm}
+\vspace{-2ex}
+    \includegraphics[width=80mm]{gfx/fig5.png}\label{fig5}
+\vspace{2pt}
+\captionof{figure}{Composite wall}
+\end{minipage}
+
+Now, using this information, derive an equation for the unknown $k_s$, before moving to the next section.
+
+\subsection{Implementation}
+
+\bit{TIP: } Before proceeding, you may find it convenient to comment out any code breaks in the sections above:
+
+\n
+\begin{lstlisting}[numbers=none]
+% comment out any return calls above
+return --> % return
+
+% you may want to comment out any pause commands too
+pause;  --> % pause;
+\end{lstlisting}
+
+\n
+Next, we'll prepare a \texttt{MATLAB} function to solve for $k_s$. To do this, open the file named \texttt{calc\_ks.m} and insert the $k_s$ equation that you just derived. You will notice that the derivative terms have already been supplied.
+
+\begin{formal}
+    \begin{deliv} \bit{(\ $k_s$\ )} 
+    If done correctly, your estimated $k_s$ value will be printed to the \texttt{MATLAB} console. Report your results (including units) and provide 1-2 sentences discussing whether your solution is reasonable or not.
+    \end{deliv}
+\end{formal}
+
+
+\section{Heat Rate}
+
+For this exercise, we calculate the heat rate, $q [W]$, for each section of the experiment apparatus. To do so, open up \texttt{fouriers\_law.m} and insert the appropriate form of Fourier's Law:
+
+\eq{
+q_x = -k A \frac{dT}{dx}  \tag{Fourier's Law}
+}
+
+Here, we are looking for the \it{heat rate}, not \it{heat flux} - so be careful with units. If your calculations were performed correctly, your \texttt{MATLAB} console should read:
+
+\begin{lstlisting}[numbers=none]
+PART 3: Heat Rate: 
+
+q[W]: 
+
+     Pin      qh       qs       qc  
+    _____    _____    _____    _____
+    40.74    37.56    37.56    35.66
+ 
+\end{lstlisting}
+In which all units are in Watts $[W]$.
+
+\begin{formal}
+    \begin{deliv} \bit{Heat Rate:} 
+    Paste your \texttt{MATLAB} console output for this section into your report. Provide 1-2 sentences detailing differences and/or potential loss mechanisms between the $P_{in}$ and your calculated values.
+    \end{deliv}
+\end{formal}
+
+
+\section{Contact Resistance}
+
+Open \texttt{calc\_contact\_res.m} and provide the necessary expressions (see text or lecture notes) for the contact resistance. Your values, if correct, should be on the order of $\approx $ \SI{5e-5}{(<units>)}.
+Next, revisit your Fig.~\ref{fig3} produced above. Are these sharp discontinuities between materials realistic? Consider what factors may play a role in creating these `jumps' and what could be used to minimize them.
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=125mm]{gfx/fig6.pdf}
+    \caption{Transient temperature data}\label{fig6}
+    \end{center}
+\end{figure}
+\begin{formal}
+    \begin{deliv} \bit{Contact Resistance} 
+    Paste your \texttt{MATLAB} console output for this section into your report. Provide 1-2 sentences detailing differences and/or potential loss mechanisms between $P_{in}$ and your calculated values.
+    \end{deliv}
+\end{formal}
+\section{Deliverables}
+
+Compile the above deliverables (blue boxes) into a single document. Be sure to include your name and section number. This assignment will be due when you arrive to to class.
+
+\end{document}

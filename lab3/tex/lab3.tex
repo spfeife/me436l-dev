@@ -1,0 +1,129 @@
+\documentclass[11pt, letterpaper]{article} 
+\input{./include/structure.sty} 
+\graphicspath{{./gfx/}}
+
+\usepackage[boxed]{algorithm2e}
+
+
+\definecolor{light-gray}{gray}{0.98}
+\usepackage[bottom]{footmisc}
+
+\usepackage{siunitx}
+\usepackage{xfrac}
+
+\title{ \textsc{Prelab Exercise 3: \\ Transient Conduction} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
+
+\begin{document}
+\date{}
+\maketitle
+\thispagestyle{firstpage} 
+
+
+
+
+\section*{Introduction}
+
+This week, we continue our analysis of conduction; but this time, we remove the always prevalent \textit{`steady-state'} assumption and explore \it{transient conduction}. In this experiment we will submerge several geometries (and materials) into a heated \it{bath} and study how the temperature changes with time. We will then compare these observations with two popular models, a \it{`lumped'} (capacitance) method and a series approximation of the exact analytical solution (for a set of simplistic geometries).
+\n
+As with past pre-lab assignments, this document will act as a guide towards creating a mathematical model. However, for this lab, the experimental aspects can take considerably more time (30-45min) than before, so it may be wise to split up responsibilities within your group and have some members perform the experiment while others complete this assignment.
+
+\section*{Prerequisites}
+Before attempting this pre-lab assignment, it is imperative that you:
+{\small
+\begin{itemize}
+    \item Complete the pre-lab quiz on Bb.
+    \item Review \bit{textbook sections 5.1, 5.2, 5.4-5.6},
+    \item Review \bit{experiment procedures}, and
+    \item Watch the \bit{pre-lab videos} on Blackboard (Bb).
+\end{itemize}
+}
+
+\section*{Getting Started}
+First, if you have not already, you will need to download the starter code from Bb (located in the `Lab 3' directory) and unzip its contents into the directory where you wish to complete the exercise. Be sure to have completed all of the prerequisites before attempting this assignment.
+
+\subsection*{Files included in this exercise:}
+Once you have unzipped the contents of the starter package, you should have the following files:
+
+\begin{itemize}
+\renewcommand\labelitemi{-- }
+   \item \bd{\texttt{ex3.m}}
+    \item \texttt{/lib}
+\renewcommand\labelitemi{[$\star$]}
+    \item  \texttt{ex3\_cyl.m}
+    \item  \texttt{ex3\_slab.m}
+    \item  \texttt{ex3\_sph.m}
+    \item \texttt{lcm.m} 
+    \item \texttt{one\_term.m} 
+\end{itemize}
+
+\noindent
+$\star$ indicates files that you will need to complete.\\
+
+\n
+As you can see, there are \it{three} main scripts in this assignment (one for each shape), in which you will only need to make minor adjustments to these scripts. However, there are \it{two} functions that will need to be completed. 
+
+\subsection*{Environment Setup}
+Before we can get started, we need to setup our MATLAB environment properly. As always, if using the laboratory computers, be sure to be running your code from the \texttt{C:\textbackslash temp} directory, and also make sure you have unzipped your code properly. Otherwise you may receive `\texttt{./lib not found}' errors.
+
+\subsection*{Assignment Outline}
+
+To complete this assignment, you will need to do the following:
+
+\begin{itemize}
+    \item Set properties in each \bd{\texttt{ex3\_<shape>.m}} script.
+    \item Complete \bd{\texttt{lcm.m}} \& \bd{\texttt{one\_term.m}}
+    \item Run each script, using your experimental data.
+    \item Complete in-class assignment.
+\end{itemize}
+
+
+
+
+\section{Open \& Set Properties}
+
+To begin open any one of the scripts titled: \bd{\texttt{ex3\_<shape>.m}}. This will be the main run script for both materials of a given shape. To load data and set the material, you must comment out one of the following lines:
+
+\begin{lstlisting}[numbers=none]
+%% =================    SETUP    ==================
+
+fname = 'brass_cylinder'; matl_type = 'Brass';
+%fname = 'steel_cylinder'; matl_type = 'SS';
+
+\end{lstlisting}
+
+The first line will call an excel sheet titled \bd{\texttt{brass\_cylinder.xlsx}}, and set the material type to \bd{\texttt{Brass}}. Commenting out this line and uncommenting the following will switch to stainless stell.
+
+Now, we arrive to the \it{properties} section. 
+\n
+\textcolor{dkred}{\bit{To do:}} \it{Using information provided in the procedures and definitions in the textbook, fill in the missing information:}
+
+\n
+\begin{lstlisting}[numbers=none]
+% thermal conductivity
+kb = 1;  % ???
+ks = 1;  % ???
+
+% characteristic length scales
+Lc_one_term = 1; % ???
+Lc_lcm = 1;  % ???
+
+\end{lstlisting}
+
+This must be done for each script (shape).
+
+\section{Set LCM \& One-term approx}
+
+Next, open and complete the following functions: \bd{\texttt{lcm.m}} \& \bd{\texttt{one\_term.m}}. This function requires the calculation of the \it{Biot} number and the \it{Fourier} number, before filling in the relation for temperature.
+
+\n
+\begin{lstlisting}[numbers=none]
+% Set Bi / Fo
+Bi = 1;  % ???
+Fo = 1;  % ???
+
+% Calculate T via LCM (Eq. 5.13)
+T = 1;  % ???
+\end{lstlisting}
+
+Once these functions are completed, answer the questions in the in-class assignment.
+\end{document}
