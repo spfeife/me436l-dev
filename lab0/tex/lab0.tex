@@ -3,11 +3,12 @@
 \graphicspath{{./gfx/}}
 
 \definecolor{light-gray}{gray}{0.98}
-\usepackage[bottom]{footmisc}
+\usepackage[bottom,hang,flushmargin]{footmisc}
+\renewcommand{\footnotesize}{\scriptsize}
 
 \usepackage{siunitx}
 
-\title{ \textsc{Lab 0: \\ Matlab Tutorial} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
+\title{ \textsc{Lab 0: \\ Matlab Tutorial} \\ {\large  \color{darkgray} ME 436 Heat Transfer - Fall 2017}}
 
 \begin{document}
 \date{}
@@ -16,26 +17,39 @@
 
 
 \section*{Introduction}
-The purpose of this pre-lab assignment is to save \textit{you} time. Once completed, you will have a plug-and-play math model ready to go. This shift from post-processing to pre-lab frees up precious lab time and allows us to dive deeper into our experiments.
 
-So, rather than having each group build an Excel sheet from scratch and submitting a weekly (full) report, we will provide you with a set of partially completed \texttt{MATLAB} scripts and sample data. It will be your job to fill in the missing spots and answer a few short questions. To receive full credit, you must submit your responses at the beginning of your lab period.
+This short tutorial is designed to familiarize you with \texttt{MATLAB} and the general structure of the homework assignments to come. Be sure to read through this document carefully and check out the resources section at the end. Finally, if you have any questions or difficulties, be sure to contact your TA as soon as you can.
 
+\subsection*{Scope}
+
+The purpose of each homework assignment is to save \textit{you} time. Once completed, you will have a plug-and-play mathematical model ready to go. 
+As some of you may be aware, this is a slight departure from previous labs, in which much of the analysis is generally performed after data collection. 
+By shifting some of the weight from \textit{post-processing} onto the \textit{pre-lab}, this frees up precious lab time and provides a more balanced workload for everyone. 
+More importantly, this approach allows us to dive deeper into the experiments and ultimately ask more interesting questions.
+
+\n
+So, rather than having each group build an Excel sheet from scratch to analyze your collected data (at home, after the lab), we will provide you with a set of partially completed \texttt{MATLAB} scripts and sample data.
+Then, your homework assignment (individual) will be to complete these \texttt{MATLAB} scripts and answer a few short questions. To receive full credit, you must submit your responses at the \textit{beginning} of your lab period. 
+You will then use these mathematical models in-class to quickly process your experimental data.
+ 
 \subsection*{Why Matlab?}
 
-From our experience, far too much time is lost slogging through the minutiae -- rather than focusing on the more critical aspects. With the assistance of \texttt{MATLAB}, we can essentially sidestep many of these uninspiring, and often excessively mundane, tasks that detract from the core laboratory objectives. For instance -- since Excel is often the only software alternative -- locating cell numbers (and debugging), formatting charts, performing error-prone and repetitive calculations (property look-up's, interpolation, unit conversions \&, etc.), or attempting to process multiple datasets within a reasonable timeframe. Taken together, these tasks quickly snowball into a much larger (and time-consuming!) task than initially anticipated. More importantly, however, these mundane details dilute the overall message. We should be focused on performing experiments and exploring data - rather than fighting with software. That being said...
+From our experience, far too much time is lost slogging through the minutiae -- rather than focusing on the more critical aspects. With the assistance of \texttt{MATLAB}, we can essentially sidestep many of these uninspiring -- and often mundane -- tasks that detract from the core laboratory objectives. For example, with Excel, locating cell numbers, debugging, formatting charts, and performing repetitive calculations \textit{(property look-up's, interpolation, unit conversions \&, etc.)}, can be very mundane... Taken together, these tasks can quickly snowball into a much larger (and time-consuming!) task than initially anticipated. More importantly, however, these mundane details dilute the overall take-away message. We should be more focused on performing experiments and exploring data - rather than fighting with computer software. That being said...
 
 
-\subsection*{Not a Matlab fan? }
+\subsection*{Not a Matlab fan?}
 
-No problem. This isn't a Matlab course --  nor is it an Excel course -- we're interested in Heat Transfer.  Thus, we only expect the \textit{bare minimum} on the programming front; the main points of which will covered throughout Labs 0 \& 1. Anything beyond entry-level will be explicitly provided to you.
-
-
+No problem. This isn't a \texttt{MATLAB} course --  nor is it an Excel course -- we're interested in Heat Transfer.  Thus, we only expect the \textit{bare minimum} on the programming front. Anything beyond entry-level will be explicitly provided to you.
 
 \section*{Getting Started}
-This short tutorial will help familiarize you with the general format of the pre-lab assignment. First, you will always need to download the starter code from Bb (location will be announced) and unzip its contents to the directory where you wish to complete the exercise. However, be sure to have completed all of the prerequisites before attempting this assignment.
+As stated above, this short tutorial is designed to help familiarize you with the basic format of the homework assignments. In addition, this document has been written to provide a comprehensive explanation at each step along the way. You may want to use this as a reference throughout the semester. In general, the assignment instructions will be written more concisely. 
+
+\n
+First, you will always need to download the starter code from Blackboard (Bb), and \textit{extract} (unzip) its contents to the directory in which you wish to complete the exercise\footnote{\textit{Note: when using the Heat Transfer Lab computers, you \ul{must} extract your code to the local hard drive: \texttt{C:/temp/}, NOT to the server (ie., Desktop, Group Folder, \&, etc.) See additional details at the end of this document.}}. Before attempting, make sure that you have completed all of the \textit{prerequisites} below.
+
 
 \section*{Prerequisites}
-Here's a short list of the essentials that you should have completed before attempting the assignment. For example, in Lab 1:
+Generally, in this section you will find a short list of the essentials that should be completed \textit{before} attempting the assignment. For \textit{example}, in Lab 1 you will see:
 {\small
 \begin{itemize}
     \item Review the \bit{textbook sections:} 2.1, 2.2 \& 3.1-3.1.4,
@@ -46,30 +60,59 @@ Here's a short list of the essentials that you should have completed before atte
 }
 
 
-\subsection*{Files included in this exercise}
-Now we're ready to start the assignment. Once you have unzipped the contents of the starter package, you should have the following files and folders
+\subsection*{Files included in this exercise:}
+Now we are ready to start the assignment. Once you have unzipped the contents of the starter package, you should have the following files and folders:
 
 \begin{itemize}
 \renewcommand\labelitemi{-- }
    \item \texttt{ex0.m} - \it{main file that you will work out of.}
     \item \texttt{/lib} - \it{functions and files that work behind the scenes. It's best not to touch them.}
 \renewcommand\labelitemi{[$\star$]}
-    \item \texttt{plotData.m} - \it{function that plots your data - you will need to adjust this one.}
+    \item \texttt{plotData.m} - \it{function that plots your data - you \ul{will} need to adjust this one.}
 \end{itemize}
 
 \noindent
 $\star$ indicates files that you will need to complete.\\
 
-
-In general, you will be using the script titled \texttt{ex<lab no>.m}, but will not be required to make any changes to it. You are only required to modify functions (often only 1-2 lines of code) in the files specified above. 
+In general, you will be using the script titled \texttt{ex<lab no>.m}, without making any sensible changes to it. However, sometimes you will be required to comment out the \texttt{return} commands at the end of each section, to better understand each step of the analysis. More information about this will be provided below.
 
 \setcounter{section}{-1}
 \section{Warm-Up \& System Check}
 
-Before starting, it is often useful to understand the data by visualizing it. We should also take a moment to make sure that our system is working as expected; so, let's plot a sample dataset.
+Before starting, it is often useful to understand the data by first visualizing it. In particular, for the upcoming experiment (Lab 1), we need to make sure that our collected data is at steady--state. Hence, for this first tutorial, we will load a sample dataset and then plot it using \texttt{MATLAB}. In the process, we will also make sure that our system is setup correctly.
+
+\subsection{Load Data}
+Now, make sure that you have \texttt{MATLAB} started and the script titled \texttt{`ex0.m'} opened up in the editor. If you have any troubles with this step, be sure to check out the resources at the end of this document or ask your TA.
 
 \n
-For the upcoming experiment, we need to make sure that our collected data is at steady--state. In \texttt{ex0.m}, the dataset is loaded from the data file into the the variable \texttt{M}:
+Now, with \texttt{ex0.m} open, the first thing you will see is the \textit{Documentation Header:}
+
+\n
+\begin{lstlisting}[numbers=none]
+%% ME 436L Heat Transfer
+% Lab 0 | MATLAB Tutorial
+%
+%  INSTRUCTIONS
+%  ------------
+%
+%  This file contains code that will guide you through the assignment. Be 
+%  sure to follow the instructions provided in the attached document.
+%
+%  NOTE: You will need to complete the following functions:
+%
+%       plotData.m
+%
+% For this exercise, you will be required to comment out the 'return'
+% command line at the end of each section, to ensure that you fully
+% understand each step of the analysis.
+%%
+% Written By: Spencer Pfeifer | Revision: Paola G. Pittoni
+% Date:   8/24/17
+%
+%#ok<*UNRCH>
+\end{lstlisting}
+\n
+This provides information as to what the script does, who wrote it, and when. Now, skipping the \textit{Initialization} section, we get to a section titled \textit{`Load Data'}. Here, we load a sample dataset from a text file and store it into the variable \texttt{M}:
 \n
 \begin{lstlisting}[numbers=none]
 % load tab separated data
@@ -77,7 +120,7 @@ M = load('data.txt');
 \end{lstlisting}
 \n
 
-Before running the script, you must uncomment this line. Once you have pressed `Run,' we now have a matrix $M$ of size $93 \times 11$ ($rows \times columns$), or $M \in \mathbb{R}^{93 \times 11}$. The columns in $M$ are as follows:
+Once you have pressed `Run,' you will now have a matrix $M$ of size $93 \times 11$ ($rows \times columns$), or $M \in \mathbb{R}^{93 \times 11}$. The columns in $M$ are defined as follows:
 \\
 {\small
 \begin{center}\renewcommand{\arraystretch}{1.5}
@@ -92,8 +135,26 @@ Before running the script, you must uncomment this line. Once you have pressed `
 \end{center}
 }
 
+In which $TC_n$ refers to the thermocouple number, read in degrees Celsius. Next, you will see a line that looks similar to the following:
+\n
+\begin{lstlisting}[numbers=none]
+% COMMENT ME OUT!!
+break_msg; dbstack; return;
+\end{lstlisting}
 
-Now, let's separate out this data into more meaningful variables\footnote{\textit{Note: if you are not familiar with the syntax, check out: \href{https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html}{Matrix indexing in Matlab}  }}
+\n
+This is what we refer to as a \texttt{return} command. In short, this line will exit the program and leave you with a message that looks similar to the following:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=90mm]{gfx/program_exit_line.png}
+    \caption{Sample Matlab Output. \textit{Tip: You can click on the line number and it will take you to the exact line of the \texttt{return} function.}}
+    \end{center}
+\end{figure}
+\vspace{-2mm}
+You will need to \textit{comment out} this line (place a \% out front) in order to continue.
+
+\subsection{Extract \& Plot Data}
+Next, let's separate out this data into more meaningful variables.\footnote{\textit{Note: if you are not familiar with the syntax, check out: \href{https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html}{Matrix indexing in Matlab}  }} 
 \n
 \begin{lstlisting}[numbers=none]
 t = M(:,1);         % get time vector, [s]
@@ -103,10 +164,7 @@ I = M(:,11);        % Current, [A]
 \end{lstlisting}
 
 \n
-At this point your program should be paused. You should take this moment to go into the \it{workspace} and confirm the above variable assignments.
-
-\n
-Now let's plot our temperatures with time.  First, press \texttt{return} to un-pause your program. Then, the following lines will execute:
+You should take this moment to press \texttt{Run} and open the \it{workspace} to confirm the above variable assignments. Now, after removing the \texttt{return} command, let's plot our temperatures with time by executing the following lines:
 
 \n
 \begin{minipage}{\linewidth}
@@ -129,9 +187,7 @@ grid on
 \end{minipage}
 
 \n
-Now, if everything was done correctly, you should something similar to Fig.~\ref{fig1} below.
-
-
+Now, if everything was done correctly, you should obtain the Fig.~\ref{fig1} below.
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=125mm]{gfx/fig1.png}
@@ -144,12 +200,17 @@ A few quick questions to ask:
 \begin{formal}
 \begin{quest} \bit{Sanity Check.}
 \begin{itemize}
-    \item Does your plot match Fig.~\ref{fig1} below? 
-    \item \it{Are you using the correct version of \texttt{MATLAB}?} 
+    \item Does your plot match Fig.~\ref{fig1}? 
     \item Is all of our data at steady-state?
 \end{itemize}
 \end{quest}
 \end{formal}
+
+\begin{itemize}
+    \item \textit{Note: This blue box will be used to denote your deliverables for the assignment. Be sure to pay close attention.}
+\end{itemize}
+
+
 \begin{center}
 \begin{tcolorbox}[enhanced, width=14cm, size=tight, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
 \n
@@ -157,25 +218,46 @@ A few quick questions to ask:
 \bit{Checkpoint} - If you had any difficulties obtaining Fig.~\ref{fig1}, \bul{stop here} and contact your Lab Instructor. You may run into more troubles ahead.
 }
 \end{tcolorbox}
-
 \end{center}
-
-When you're ready to continue, press \texttt{enter} to un-pause your program and proceed.
-
-\n
 \hrule
 
-\section{Plot Data}
+\section{Plot Steady-State Data}
 
-Now, let's actually plot the steady-state data. First,  we need to take an average of each column in $M$. This is done for you using the $mean( )$ command.
+Now, let's plot the spatial temperature distribution. To do this, we simply average the transient data. This is easily done in \texttt{MATLAB} by the $mean( )$ command:
 
-Then, we call a \texttt{plotData.m} function to plot our data. However, this plot function is incorrect and will not run correctly.  Therefore, you will need to do the following:
+\begin{lstlisting}[numbers=none]
+% take an average of the last (~20) points 
+N = 20;
+Tm = mean(dat(end-N:end,:));      % [C]
+Vm = mean(V(end-N:end));          % [V]
+Im = mean(I(end-N:end));          % [A]
+\end{lstlisting}
+
+Next, we call a \texttt{plotData.m} function to plot our data. As-it-is, this plot function \textit{\ul{is incorrect}} and will not run properly. Therefore, you will need to open \texttt{plotData.m} and adjust code accordingly in order for it to run properly. The sections that you will need to complete are outlined:
+
+\n
+\begin{lstlisting}[numbers=none]
+% plot first three T/Cs
+plot(x(2:4),y(1:3),'ko-','MarkerSize', 8);
+
+% plot middle two T/Cs
+% ====================== YOUR CODE HERE ======================
+
+% plot last three T/Cs
+% ====================== YOUR CODE HERE ======================
+
+
+% set labels & axis limits
+% ====================== YOUR CODE HERE ======================
+xlabel('');
+ylabel('');
+\end{lstlisting}
+
 \begin{itemize}
-    \item Open \texttt{plotData.m} 
-    \item Adjust code accordingly to obtain Fig.~\ref{fig2} below.
+    \item \textit{Note: Pay close attention to the instructions.}
 \end{itemize}
 
-\Note: if you program is paused, you may need to exit before opening \texttt{plotData.m}. This can be done by pressing \texttt{CTRL-C}.
+When you're finished, you must \bit{go back} to \texttt{ex0.m} before you can press \texttt{Run}. If you attempt to run the function \texttt{plotData.m}, you will receive an error. If your adjustments were correct, and \texttt{ex0.m} was properly executed, you should obtain Fig.~\ref{fig2}.
 
 
 \begin{figure}[H]
@@ -185,7 +267,7 @@ Then, we call a \texttt{plotData.m} function to plot our data. However, this plo
     \end{center}
 \end{figure}
 
-Then, if everything was done correctly in part 1a, you should be able to press \texttt{Enter} at the \texttt{pause} mark and arrive at a figure that resembles Fig.~\ref{fig3} below.
+Then, if everything was done correctly above, after commenting out the following \texttt{return} command, you will arrive at a figure that resembles Fig.~\ref{fig3}.
 
 \begin{figure}[H]
     \begin{center}
@@ -197,18 +279,108 @@ Then, if everything was done correctly in part 1a, you should be able to press \
 Here, we have added regression lines as well as some labels that will make more sense when we get to Lab 1.
 
 \n
-The box below outlines the \it{deliverable} for the pre-lab assignment:
+The box below outlines the \it{deliverable} for this assignment:
 
 \begin{formal}
-    \begin{deliv} \bit{SAMPLE:  Steady-state T/C plot} (Fig.~\ref{fig3} above) 
-   Export your figure to an image: \texttt{File >> Export Setup >> Export}, and include it in your submission.
+    \begin{deliv} \bit{SAMPLE:  Steady-state temperature distribution plot} (Fig.~\ref{fig3}). Export your figure to an image: \texttt{File >> Export Setup (change the properties as desired)>> Export}, and include it in your submission.
     \end{deliv}
 \end{formal}
 
+\begin{itemize}
+    \item \textit{Note: Do not take a screenshot! Export the figure to a \texttt{.png}.}
+\end{itemize}
 
 \section*{Submission}
 
-Once all of the deliverables have been completed, you will simple place the output into a single document and hand it to your TA at the beginning of lab. More details will be provided on a lab-to-lab basis.
+Generally, once all of the deliverables have been completed, you will simply place the output into a single document, and hand it to your TA at the \textit{beginning} of lab. For this exercise, print Fig.~\ref{fig3} for your 'participation' grade.
+
+\vspace{5mm}
+\hrule
+
+\newpage
+
+
+\section*{Notes:}
+
+\bul{Heat Transfer Lab:}
+\begin{itemize}
+    
+
+\item \texttt{MATLAB} must be run from the local hard drive: \texttt{C:/temp/}, \bul{NOT} on the server \textit{(ie., \texttt{Desktop}, \texttt{Group Folder}, \&, etc.).} 
+    \begin{itemize}
+    \setlength\itemsep{0.5em}
+         \item \bit{Reason:} This will cause a chain of problems. The server directories are shared across all HT Lab computers, and synchronized every few minutes. 
+         \item \textit{\ul{Common scenario:}} Two people unknowingly edit the same document. Once the server synchronizes, one of those two people \bul{will lose all of their work.}
+    \end{itemize}
+
+    \item You \textit{\ul{must}} close Matlab when you're done for the day.
+    \begin{itemize}
+    \setlength\itemsep{0.5em}
+         \item \bit{Reason:} The \texttt{addpath(`./lib');} command adds \ul{your} \texttt{./lib} folder to the \texttt{MATLAB} path, while the program remains open. If you do not close Matlab the next section will use \ul{your} data.
+    \end{itemize}
+    
+\end{itemize}
+
+\bul{General:}
+\begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item \textit{\ul{Do not rename any functions!}} These are name (and case) sensitive. If any functions are renamed, your script will not find them!
+    \item Whenever you see the dialog below, be sure to choose \textit{Change Folder}. Otherwise you may inadvertently add unwanted files to the \texttt{MATLAB} path.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=100mm]{gfx/add_path_warning.png}
+    \end{center}
+\end{figure}
+
+\item Remember, you cannot \textit{Run} a function by pressing the \texttt{`Run'} button. You can only do this for \textit{scripts}. See the Resources section below for more information.
+
+\item \bul{Do NOT} use screenshots for reporting your results.
+\begin{itemize}
+    \setlength\itemsep{0.5em}
+         \item \bit{Reason:} The default Matlab \textit{figure} window is designed for the screen, \textit{\ul{not print}}. This will turn out very small and blurry. 
+         \item Simply do the following: \texttt{File >> Export Setup >> Apply to Figure >> Export >> Choose PNG Format.}
+\end{itemize}
+
+
+\end{itemize}
+
+
+\newpage
+\section*{Resources}
+This section provides a list of helpful resources for getting started with Matlab. As always, your TA and classmates will be valuable resources as well.
+
+
+
+\begin{itemize}
+    \setlength\itemsep{0.5em}    
+
+    \item \href{https://www.mathworks.com/help/matlab/getting-started-with-matlab.html}{Mathworks.com}: Here is a variety of resources produced by Mathworks. This covers the basics of Matlab, including a getting started tutorial.
+
+    \item  \href{https://weblogin.iastate.edu/cgi-bin/index.cgi}{Lynda.com}: A video-based learning platform for a variety of topics. Normally this is a paid service, but ISU provides free access. To use this resource, do the following:
+
+\begin{itemize}
+    \setlength\itemsep{0.5em}
+    \item \href{http://www.iastate.edu}{iastate.edu} \texttt{ >> Sign Ons >> More Sign Ons... >>}
+    \item Then click the \href{https://weblogin.iastate.edu/cgi-bin/index.cgi}{Lynda.com} button.
+    \item Once you fill in your credentials, type \texttt{MATLAB} into the search bar and select \textit{`Learning Matlab'}
+    \item Here you will find a selections of 2-3min videos explaining specific aspects of Matlab.
+\end{itemize}
+
+\item \href{https://www.youtube.com/watch?v=wqxwIk3vzkI&list=PL7CAABC40B2825C8B}{Getting Started with Matlab}: A youtube playlist produced by Mathworks.
+
+\item \href{https://www.youtube.com/watch?v=IoiB16fg3tQ}{What is Matlab and Why is it Used?} - A corny video explaining what Matlab is commonly used for.
+
+\end{itemize}
+
+\vspace{10mm}
+\begin{itemize}
+\item \bul{Finally, Ask questions!} It doesn't take much to e-mail your TA! If you don't ask, we cannot help!
+\end{itemize}
+
+
+
+
 
 
 

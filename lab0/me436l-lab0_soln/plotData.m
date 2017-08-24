@@ -1,11 +1,6 @@
 function plotData(x, y)
 % PLOTDATA(x,y) Plots the data points x and y onto a new figure
 
-% open a new figure window
-figure; 
-hold on;
-
-% ====================== YOUR CODE HERE ======================
 % Instructions: Plot the temperature data (y) using the "plot" command. The
 %               code provided is incorrect and needs to be fixed in order
 %               to match Fig. 2.
@@ -14,6 +9,10 @@ hold on;
 %               commands. 
 %
 % Hint: Pay close attention to the indices.
+
+% open a new figure window
+figure; 
+hold on;
 
 
 % plot first three T/Cs
@@ -29,8 +28,6 @@ plot(x(6:8),y(6:8),'ko-','MarkerSize', 8);
 % set labels & axis limits
 xlabel('T/C Position [mm]');
 ylabel('Temperature [C]');
-
-% ============================================================
 
 xlim([0 120])
 ylim([0 110])
