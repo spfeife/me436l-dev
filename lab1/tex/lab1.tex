@@ -2,11 +2,6 @@
 \input{include/structure.sty} 
 \graphicspath{{./gfx/}}
 
-\definecolor{light-gray}{gray}{0.98}
-\usepackage[bottom]{footmisc}
-
-\usepackage{siunitx}
-
 \title{ \textsc{Prelab Exercise 1: \\ Linear Heat Conduction} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
 
 \begin{document}
@@ -14,12 +9,9 @@
 \maketitle
 \thispagestyle{firstpage} 
 
-
-
-
 \section*{Introduction}
 
-The objective of this experiment is to explore \it{Fourier’s Law} for linear conduction by studying steady-state heat transfer through various materials. Completion of this pre-lab assignment will provide you with the necessary tools to properly study and explore the data you will collect in lab.
+The objective of this experiment is to explore \it{Fourier’s Law} for linear conduction by studying steady-state heat transfer through various materials. Completion of this assignment will provide you with the necessary tools to properly study and explore your collected lab data.
 
 \section*{Prerequisites}
 Before attempting this pre-lab assignment, it is imperative that you have:
@@ -33,15 +25,16 @@ Before attempting this pre-lab assignment, it is imperative that you have:
 }
 
 \section*{Getting Started}
-First, you will always need to download the starter code from Bb (located in the lab directory) and unzip its contents to the directory where you wish to complete the exercise. Be sure to have completed all of the prerequisites before attempting this assignment.
+First, be sure to download the starter code from Blackboard (Bb), and \textit{extract} (unzip) its contents to the directory in which you wish to complete the exercise\footnote{\textit{Note: when using the Heat Transfer Lab computers, you \ul{must} extract your code to the local hard drive: \texttt{C:/temp/}, NOT to the server (ie., Desktop, Group Folder, \&, etc.)}}. Before attempting, make sure that you have completed all of the \textit{prerequisites} below.
 
 \subsection*{Files included in this exercise:}
-Once you have unzipped the contents of the starter package, you should have the following files:
+Once you have unzipped the contents of the starter package, you should see the following files:
 
 \begin{itemize}
 \renewcommand\labelitemi{-- }
    \item \texttt{ex1.m}
     \item \texttt{/lib}
+   \item \texttt{/data}
 \renewcommand\labelitemi{[$\star$]}
     \item \texttt{plotData.m}
     \item \texttt{calc\_ks.m}
@@ -53,7 +46,7 @@ Once you have unzipped the contents of the starter package, you should have the 
 $\star$ indicates files that you will need to complete.\\
 
 \n
-Throughout this exercise, you will be using the script \texttt{ex1.m}, but will not be required to make any major modifications to it. You are only required to modify the functions \textit{(often only 1-2 lines of code)} in the files specified above. Your submission will consist of a compilation (via word processor) of \textit{'deliverables'}, each resembling the following:
+Throughout this exercise, you will be using the script \texttt{ex1.m}, but will not be required to make any major modifications to it. You are only required to modify the functions \textit{(often only 1-2 lines of code)} in the files specified above. Your submission will consist of a compilation (via word processor) of \textit{`deliverables'}, specified throughout this document. Instructions for each deliverable will be highlighted in a blue box, similar to the following: 
 \setcounter{deliv}{-1}
 \begin{formal}
     \begin{deliv} \bit{Sample}s
@@ -69,7 +62,7 @@ Follow the instructions in this blue box.
 Before starting, it's often a good idea understand the data by first visualizing it. This section will walk you through the essentials of doing so. \textit{If you have any difficulties getting started, be sure to ask your TA for assistance.} \n
 
 \noindent
-First, open the Matlab script \texttt{ex1.m} and read through the instructions. The section immediately following clears the workspace and initializes our paths and raw data variable. Next, we get the to \textit{Load Data} section, in which a sample dataset is loaded into the variable \texttt{M}:
+First, open the Matlab script \texttt{ex1.m} and read through the instructions. The section immediately following, clears the workspace and initializes our paths and raw data variable. Next, we get to a section titled \textit{`Load Data'}. Here, we load a sample dataset from a text file and store it into the variable \texttt{M}:
 \n
 \begin{lstlisting}[numbers=none]
 % load tab separated data
@@ -91,7 +84,18 @@ Now, we have a matrix $M$ of size $93 \times 11$ ($rows \times columns$), or $M 
 \end{center}
 }
 
-Separating these columns into more meaningful variables:\footnote{\textit{Note: if you are not familiar with the syntax, check out: \href{https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html}{Matrix indexing in Matlab}  }}
+In which $TC_n$ refers to the thermocouple number, read in degrees Celsius. Next, you will see a line that looks similar to the following:
+\n
+\begin{lstlisting}[numbers=none]
+% COMMENT ME OUT!!
+break_msg; dbstack; return;
+\end{lstlisting}
+
+\n
+This is what we refer to as a \texttt{return} command. You will need to \textit{comment out} this line (place a \% out front) in order to continue. 
+
+\n
+Next, let's separate out this data into more meaningful variables.\footnote{\textit{Note: if you are not familiar with the syntax, check out: \href{https://www.mathworks.com/company/newsletters/articles/matrix-indexing-in-matlab.html}{Matrix indexing in Matlab}  }} 
 \n
 \begin{lstlisting}[numbers=none]
 t = M(:,1);         % get time vector, [s]
@@ -101,8 +105,7 @@ I = M(:,11);        % Current, [A]
 \end{lstlisting}
 
 \n
-Now let's plot our temperatures with time:
-
+Then we simply plot temperature with time:
 \n
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[numbers=none]
@@ -165,17 +168,44 @@ break_msg; dbstack; return;
 \n
 \hrule
 
-\section{Plot Data}
+\section{Plot Steady-State Data}
 
-Now, let's plot the steady-state data. First, we need to take an average of each column in $M$ - that is, we're finding the average temperature over time. This is done for you using the \texttt{mean( )} command.
+Now, let's plot the spatial temperature distribution. To do this, we simply average the transient data. This is easily done in \texttt{MATLAB} by the $mean( )$ command:
+
+\begin{lstlisting}[numbers=none]
+% take an average of the last (~20) points 
+N = 20;
+Tm = mean(dat(end-N:end,:));      % [C]
+Vm = mean(V(end-N:end));          % [V]
+Im = mean(I(end-N:end));          % [A]
+\end{lstlisting}
+
+Next, we call a \texttt{plotData.m} function to plot our data. As-it-is, this plot function \textit{\ul{is incorrect}} and will not run properly. Therefore, you will need to open \texttt{plotData.m} and adjust code accordingly in order for it to run properly. The sections that you will need to complete are outlined:
 
 \n
-Next, we call a \texttt{plotData.m} function to plot our steady-state data. However, \textit{this plot function is incorrect and will not run. Your task is to fix it:}
+\begin{lstlisting}[numbers=none]
+% plot first three T/Cs
+plot(x(2:4),y(1:3),'ko-','MarkerSize', 8);
+
+% plot middle two T/Cs
+% ====================== YOUR CODE HERE ======================
+
+% plot last three T/Cs
+% ====================== YOUR CODE HERE ======================
+
+
+% set labels & axis limits
+% ====================== YOUR CODE HERE ======================
+xlabel('');
+ylabel('');
+\end{lstlisting}
 
 \begin{itemize}
-    \item Open \texttt{plotData.m} 
-    \item Adjust code accordingly to obtain Fig.~\ref{fig2} below:
+    \item \textit{Note: Pay close attention to the instructions.}
 \end{itemize}
+
+When you're finished, you must \bit{go back} to \texttt{ex0.m} before you can press \texttt{Run}. If you attempt to run the function \texttt{plotData.m}, you will receive an error. If your adjustments were correct, and \texttt{ex0.m} was properly executed, you should obtain Fig.~\ref{fig2}.
+
 
 
 \begin{figure}[H]
@@ -235,7 +265,7 @@ dT/dx = \frac{(T_2 - T_1)}{L}
 \vspace{-2ex}
     \includegraphics[width=70mm]{gfx/fig4.png}
 \vspace{2pt}
-\captionof{figure}{Some figure}
+\captionof{figure}{1D Schematic}
 \end{minipage}
 
 Plugging into Fourier's Law:
@@ -280,22 +310,10 @@ q^{\prime\prime}_1 &= q_2^{\prime\prime} \\
 \captionof{figure}{Composite wall}
 \end{minipage}
 
-Now, using this information, derive an equation for the unknown $k_s$, before moving to the next section.
+Now, using this information, derive an equation for the unknown $k_s$, before moving on to the next section.
 
 \subsection{Implementation}
 
-\bit{TIP: } Before proceeding, you may find it convenient to comment out any code breaks in the sections above:
-
-\n
-\begin{lstlisting}[numbers=none]
-% comment out any return calls above
-return --> % return
-
-% you may want to comment out any pause commands too
-pause;  --> % pause;
-\end{lstlisting}
-
-\n
 Next, we'll prepare a \texttt{MATLAB} function to solve for $k_s$. To do this, open the file named \texttt{calc\_ks.m} and insert the $k_s$ equation that you just derived. You will notice that the derivative terms have already been supplied.
 
 \begin{formal}
@@ -305,18 +323,18 @@ Next, we'll prepare a \texttt{MATLAB} function to solve for $k_s$. To do this, o
 \end{formal}
 
 
-\section{Heat Rate}
+\section{Calculate Heat Rate}
 
 For this exercise, we calculate the heat rate, $q [W]$, for each section of the experiment apparatus. To do so, open up \texttt{fouriers\_law.m} and insert the appropriate form of Fourier's Law:
 
 \eq{
-q_x = -k A \frac{dT}{dx}  \tag{Fourier's Law}
+q_x = -k A \frac{dT}{dx}.  \tag{Fourier's Law}
 }
 
 Here, we are looking for the \it{heat rate}, not \it{heat flux} - so be careful with units. If your calculations were performed correctly, your \texttt{MATLAB} console should read:
 
 \begin{lstlisting}[numbers=none]
-PART 3: Heat Rate: 
+PART 3: Calculate Heat Rate: 
 
 q[W]: 
 
@@ -334,9 +352,9 @@ In which all units are in Watts $[W]$.
 \end{formal}
 
 
-\section{Contact Resistance}
+\section{Calculate Contact Resistance}
 
-Open \texttt{calc\_contact\_res.m} and provide the necessary expressions (see text or lecture notes) for the contact resistance. Your values, if correct, should be on the order of $\approx $ \SI{5e-5}{(<units>)}.
+Open \texttt{calc\_contact\_res.m} and provide the necessary expressions (see text or lecture notes) for the contact resistance. Your values, if correct, should be on the order of $\approx $ \SI{5e-5}{(m^2 C / W)}.
 Next, revisit your Fig.~\ref{fig3} produced above. Are these sharp discontinuities between materials realistic? Consider what factors may play a role in creating these `jumps' and what could be used to minimize them.
 \begin{figure}[H]
     \begin{center}
@@ -349,8 +367,10 @@ Next, revisit your Fig.~\ref{fig3} produced above. Are these sharp discontinuiti
     Paste your \texttt{MATLAB} console output for this section into your report. Provide 1-2 sentences detailing differences and/or potential loss mechanisms between $P_{in}$ and your calculated values.
     \end{deliv}
 \end{formal}
-\section{Deliverables}
 
-Compile the above deliverables (blue boxes) into a single document. Be sure to include your name and section number. This assignment will be due when you arrive to to class.
+
+\section{Submission}
+
+Compile the above deliverables (blue boxes) into a single document. Be sure to include your name and section number. This assignment will be due when you arrive to class.
 
 \end{document}

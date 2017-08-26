@@ -29,7 +29,7 @@ hold on;
 [bl, rd, org, gry] = set_colors();
 
 % plot regression
-h(1) = plot(x,Tm,'ko','MarkerSize', 8);
+h(1) = plot(x,Tm,'ko','MarkerSize', 8, 'LineWidth', 0.75);
 h(2) = plot(xv(:,1),yv(:,1),'Color', rd, 'LineStyle', '-', 'LineWidth',1.5);
 h(3) = plot(xv(:,2),yv(:,2),'Color', org, 'LineStyle', '-', 'LineWidth',1.5);
 h(4) = plot(xv(:,3),yv(:,3),'Color', bl, 'LineStyle', '-', 'LineWidth',1.5);

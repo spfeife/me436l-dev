@@ -14,7 +14,7 @@ function [q] = fouriers_law(ks, m)
 %
 %% MAIN
 
-% set derivatives from regression slopes
+% set derivatives from regression slopes --> You will need to use these.
 dTdx1 = abs(m(1));  % Top Section
 dTdx2 = abs(m(2));  % Specimen
 dTdx3 = abs(m(3));  % Bottom Section
@@ -26,13 +26,14 @@ dTdx3 = abs(m(3));  % Bottom Section
 %                   q(2) = ???   [W]
 %                   q(3) = ???   [W]
 %
-% Hint: write an expression for each q, be sure to check your units!
+% Hint: Write an expression for each q, be sure to check your units!
+% Hint: Use parenthesis to clearly separate expressions.
 
 % Set known material parameters
-diam = 25;                  % [mm]
-k_brass = 121;              % [W/m-C]
+d = 25;                  % [mm]
+k_brass = 121;           % [W/m-C]
 
-A = pi*((diam/2)/1000)^2;   % [m^2]
+A = pi*((d/2)/1000)^2;   % [m^2] <-- NOTE UNITS
 
 % calculate q for each section
 q(1) = k_brass * A * dTdx1 * (1000);    % [W]

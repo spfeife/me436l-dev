@@ -18,6 +18,10 @@
 %  each section. Otherwise, you will NOT need to change any code in this 
 %  file, only those mentioned above.
 %
+%%
+% Written By: Spencer Pfeifer | Revision: Paola G. Pittoni
+% Date:   8/25/17
+%
 %#ok<*UNRCH>
 
 %% Initialization
@@ -35,16 +39,16 @@ disp(' ')
 %% LOAD DATA
 
 %  We start by first loading a sample dataset
-fprintf('Loading data... \n');
+fprintf('Loading data... \n\n');
 
 % load tab separated data into matrix M - see assignment sheet for column
 % info
 M = load('data.txt');
 
 % Load from Excel (save this for later)
-% M = xlsread('s1_raw.xlsx');
+% M = xlsread('your_excel_sheet.xlsx');
 
-fprintf('Done. \n\n'); 
+cprintf('*comments', '>> DONE.\n');
 
 % extract time vector
 t = M(:,1);           % [s]
@@ -56,15 +60,16 @@ dat = M(:,2:9);       % [C]
 V = M(:,10);          % [V]
 I = M(:,11);          % [A]
 
+% COMMENT ME OUT!!
+%break_msg; dbstack; return;
+
 %% =========== Part 0: Warm Up / Systems Check ============= 
 % The data has been loaded and separated. Now, let's visualize it
 % and make sure the data is at steady-state. If you experience troubles
 % completing this section, you may have an outdated version of matlab.
 
-fprintf(['<strong>' 'PART 0:' '</strong>'])
-fprintf(' Plot Data... \n');
-
 % open figure and plot data
+fprintf(['\n\n' '<strong>' 'PART 0: Temperatures vs. Time' '</strong>' '\n\n']);
 figure;
 h = plot(dat);
 set(h, 'LineStyle', '-', 'LineWidth', 2)
@@ -76,22 +81,22 @@ title('Transient Data, T/C','FontSize',16);
 grid on
 
 disp(' ');
-fprintf('  CHECK: Is your plot correct?\n');
+fprintf('  CHECK: Does your plot match Fig. 1?\n')
 fprintf('  CHECK: Is your data at steady-state?\n\n');
 
-% remove break
+% COMMENT ME OUT!!
 %break_msg; dbstack; return;
 
-cprintf('comments', '>> DONE.');
-fprintf('  No deliverable for this exercise.\n\n\n');
+cprintf('*comments', '>> DONE.\n');
+cprintf('*keyword', '>> No deliverable for this exercise. \n\n\n');
 
 %% =========== Part 1a: Visualize SS Data ============= 
 %  Now, we start our first exercise by visualizing the steady-state
 %  Temperature data for each T/C. You will need to complete `plotData.m' 
 %  before continuing
 
-fprintf(['<strong>' 'PART 1:' '</strong>'])
-fprintf(' Visualize SS Data.\n\n');
+fprintf(['\n\n' '<strong>' 'PART 1: Temperature Spatial Distribution' ...
+ '</strong>' '\n\n']);
 
 % take an average of the last (~20) points 
 N = 20;
@@ -100,12 +105,15 @@ Vm = mean(V(end-N:end));          % [V]
 Im = mean(I(end-N:end));          % [A]
 
 % set x-vector (position along apparatus)
-x = 7.5:15:112.5;       % [mm]
+x = 7.5:15:112.5;       % [mm]   <-- Take Note of UNITS!
 
 % plot data
 plotData(x, Tm);
 
 fprintf('  CHECK: Does your plot match Fig. 2?\n\n')
+cprintf('*comments', '>> DONE.\n');
+
+% COMMENT ME OUT!!
 %break_msg; dbstack; return;
 
 %% =========== Part 1b: Add Regression Lines ============= 
@@ -123,7 +131,7 @@ fprintf('  CHECK: Does your plot match Fig. 2?\n\n')
 plot_full(x,Tm);
 
 cprintf('*comments', '>> DONE.\n');
-cprintf('*keyword', '>> Deliverable: Check prelab assignment! \n\n\n');
+cprintf('*keyword', '>> Deliverable: Check Assignment! \n\n\n');
 
 % remove break
 %break_msg; dbstack; return;
@@ -132,8 +140,7 @@ cprintf('*keyword', '>> Deliverable: Check prelab assignment! \n\n\n');
 % Now, we use the information above to calculate the sample thermal
 % conductivity, ks.
 
-fprintf(['<strong>' 'PART 2:' '</strong>'])
-fprintf(' Calculate ks: \n\n');
+fprintf(['\n\n' '<strong>' 'PART 2: Calculate Sample k' '</strong>' '\n\n' ])
 
 % calculate ks
 [ks] = calc_ks(m);
@@ -153,8 +160,7 @@ cprintf('*keyword', '>> Check Deliverable. \n\n\n');
 % Next, we use Fourier's Law to calculate the heat rate, q, for each
 % section.
 
-fprintf(['<strong>' 'PART 3:' '</strong>'])
-fprintf(' Heat Rate: \n\n');
+fprintf(['\n\n' '<strong>' 'PART 3: Calculate Heat Rate' '</strong>' '\n\n'])
 
 % set derivatives from regression slopes
 [q] = fouriers_law(ks, m);
@@ -162,7 +168,7 @@ fprintf(' Heat Rate: \n\n');
 % calculate power
 P = Vm * Im;
 
-% table for Heat Rate
+% Round off each value to TWO decimals
 P = round(P,2);
 qh = round(q(1),2);
 qm = round(q(2),2);
@@ -170,11 +176,8 @@ qc = round(q(3),2);
 
 % print table to screen
 fprintf('  q[W]: \n\n');
-T = table(P,qh',qm',qc',...
-    'VariableNames',{'Pin';'qh';'qs';'qc'});
-
-disp(T)
-fprintf(' \n')
+T = table(P,qh',qm',qc','VariableNames',{'Pin';'qh';'qs';'qc'});
+disp(T); fprintf(' \n\n')
 
 cprintf('*comments', '>> DONE.\n');
 cprintf('*keyword', '>> Check Deliverable. \n\n\n');
@@ -185,8 +188,7 @@ cprintf('*keyword', '>> Check Deliverable. \n\n\n');
 %% =========== Part 4: Calculate Contact Resistance ============= 
 % Now we can calculate the contact resistance between each section
 
-fprintf(['<strong>' 'PART 4:' '</strong>'])
-fprintf(' Contact Resistance: \n\n');
+fprintf(['\n\n' '<strong>' 'PART 4: Calculate Contact Resistance' '</strong>' '\n\n'])
 
 dT(1) = min(yv(:,1))-max(yv(:,2));
 dT(2) = min(yv(:,2))-max(yv(:,3));

@@ -22,6 +22,7 @@ While this is a public repo, it shouldn't be indexed by google.
 5. Remove any references to 'common'
 6. Comment all code
 7. [TeX/Gen] Discuss ***submission template*** that will be provided each lab.
+8. [TeX] Clean up `structure.sty`
 
 ### Notes
 - Might consider using `rmpath(folderName)`
@@ -35,10 +36,9 @@ While this is a public repo, it shouldn't be indexed by google.
 * **[Slides]** Make sure the slides match
 
 
-### Lab 1 ⚠️ [Working]
-* Requires some cleaning up yet.
-* [TeX] - Some adjustments to code have been made, double check that TeX file matches
-
+### Lab 1 ✅ [Complete]
+* TeX & Matlab codes are completed. 
+* **[Slides]** Need updated to match tex
 
 ### Lab 2 🚫
 * **Rewrite.** Instead of looping over all Excel sheets (was confusing) have them include the path or title of their data.

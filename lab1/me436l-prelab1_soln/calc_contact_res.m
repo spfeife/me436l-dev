@@ -24,8 +24,8 @@ dT2 = dT(2);
 % Hint: Be sure to check units!
 
 % Set known material parameters
-diam = 25;                  % [mm]
-A = pi*((diam/2)/1000)^2;   % [mm^2]
+d = 25;                  % [mm]
+A = pi*((d/2)/1000)^2;   % [mm^2]
 
 R1 = dT1 * ( A/P);  % [m^2 C/W]
 R2 = dT2 * ( A/P);  % [m^2 C/W]

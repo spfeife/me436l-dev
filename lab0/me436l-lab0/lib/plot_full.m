@@ -23,7 +23,7 @@ figure;
 hold on;
 
 % calculate regression
-[m,xv,yv] = setRegression(x,Tm);
+[m,xv,yv] = set_regression(x,Tm);
 
 % set plotting colors 
 [bl, rd, org, gry] = set_colors();

@@ -22,9 +22,6 @@
 % interface for floats (Figures/Tables), allows 'H' option
 \usepackage{float}
 
-% expanded footnote package
-%\usepackage{bigfoot}
-
 % refinements 
 \usepackage{setspace}
 \usepackage{graphicx}
@@ -224,9 +221,6 @@
 
 \newmdtheoremenv[style=mystyle]{example2}{Example}
 
-
-
-
 \theoremstyle{definition}
 \newtheorem{defnn}{Definition}
 \newtheorem*{tst*}{}
@@ -243,7 +237,7 @@
 
 
 
-		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \theoremstyle{definition}
 \newtheorem{quest}{Question Set:}
@@ -398,4 +392,14 @@
 #2
 \end{minipage}
 }
+
+
+
+
+
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{dkred}{RGB}{165,0,0}
+\usepackage[bottom,hang,flushmargin]{footmisc}
+\renewcommand{\footnotesize}{\scriptsize}
+\usepackage{siunitx}
 

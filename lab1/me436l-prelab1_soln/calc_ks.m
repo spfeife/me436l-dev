@@ -10,10 +10,11 @@ function [ks] = calc_ks(m)
 % Outputs:
 %    ks  - Computed thermal conductivity of the SAMPLE section (middle)
 %
-%#ok<*NASGU> 
+%#ok<*NASGU>
+ 
 %% MAIN
 
-% set derivatives from regression slopes
+% set derivatives from regression slopes. NOTE: You will need to use these below!
 dTdx1 = abs(m(1));  % Top Section
 dTdx2 = abs(m(2));  % Specimen
 dTdx3 = abs(m(3));  % Bottom Section

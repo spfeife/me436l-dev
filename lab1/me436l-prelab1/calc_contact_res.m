@@ -24,7 +24,7 @@ dT2 = dT(2);
 % Hint: Be sure to check units!
 
 % Set known material parameters
-d = %???
+d = %???              % [mm]
 A = %???
 
 % Now calculate the contact resistance at each interface
