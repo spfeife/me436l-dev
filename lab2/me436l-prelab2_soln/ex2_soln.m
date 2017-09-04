@@ -1,8 +1,11 @@
 %% ME 436L Heat Transfer
-% Lab 2 | Extended Surfaces
+% Lab 2 | Extended Surfaces: Main
 %
 %  INSTRUCTIONS
 %  ------------
+%
+%  This file contains code that will guide you through the assignment. Be 
+%  sure to follow the instructions provided in the attached document.
 %
 %  This script performs the following operations:
 %
@@ -10,8 +13,11 @@
 %       - Compares heat transfer rates to input power
 %       - Compares fin effectiveness & efficiency
 %
-%   This is done by looping over all Excel files in your 'data' folder and
-%   plotting the data therein.  Be sure to have your paths setup correctly.
+%       * NOTE(1): This script does not include the radiation portion of
+%       the experiment
+%
+%       * NOTE(2): This script will automatically print figures in the /figs
+%       folder and it will output tables to .csv in the /output folder
 %
 %  NOTE: You will need to complete the following functions:
 %
@@ -19,6 +25,12 @@
 %       caseD.m
 %       calc_eta.m
 %       calc_epsilon.m
+%
+%      * caseA.m has been completed for your reference.
+%
+%%
+% Written By: Spencer Pfeifer | Revisions: Paola G. Pittoni
+% Date:   9/2/17
 %
 %#ok<*SNASGU>
 %#ok<*NUSED>
@@ -30,41 +42,42 @@ clear ; close all; clc
 addpath('./lib');
 raw = [];
 
+global IF_PRINT_TABLES
+IF_PRINT_TABLES = 1;
+
 disp(' ')
 disp(' --------------------------------------------------------')
 fprintf('<strong>                Lab 2: Extended Surfaces               </strong>\n')
 disp(' --------------------------------------------------------')
 disp(' ')
 
-%% SETUP
+%% =========== Part 0: SETUP / PATHS ============= 
+% In this section you must tell MATLAB where your data is. For each data
+% set, you must provide: (1) name of your excel sheet, (2) h coefficient
+% value, (3) a proper title/description for your plots.  An example is
+% provided to you using the sample dataset.
 
-% set path to folder containing excel sheets
+% set path to folder containing data (best to leave this alone)
 pDIR = './data';
 
-% grab all excel files in directory
-xl_files = dir( [pDIR '/*.xlsx']);
-NX = length(xl_files);
-
-% Data Info (Spring 2017)
-% s1/s2 - Natural Convection (h=9)
-% s3/s4 - Low Forced (h = 30)
-% s5/s6 - High Forced (h = 40)
-
-% plot title
+% set 1
+fname{1,1} = 's1_h9.xlsx';
+h(1) = 9;    % [W/m^2 C]
 titles{1,1} = 'Temperature Distribution: h = 9 [W/m^2 C]';
+
+% set 2
+fname{1,2} = 's3_h30.xlsx';
+h(2) = 30;   % [W/m^2 C]
 titles{1,2} = 'Temperature Distribution: h = 30 [W/m^2 C]';
+
+% set 3
+fname{1,3} = 's5_h40.xlsx';
+h(3) = 40;    % [W/m^2 C]
 titles{1,3} = 'Temperature Distribution: h = 40 [W/m^2 C]';
 
-% export figure name
-str_print{1,1} = 'h_09';
-str_print{1,2} = 'h_30';
-str_print{1,3} = 'h_40';
-
-% set station numbers for each dataset
-st = {'1';'3';'5';};
-
 %% =========== Part 1: Input Properties ============= 
-% From the procedures document, fill in all of the necessary info
+% Now, using the procedures document for reference, fill in the necessary
+% information below
 
 fprintf(['<strong>' 'PART 0:' '</strong>'])
 fprintf(' Set Properties. \n');
@@ -72,12 +85,7 @@ fprintf(' Set Properties. \n');
 % set globals
 global D k P L Ac Af T_inf
 
-% x vec for plotting
-xe = 0:0.05:0.35;            % (Position - experiment) [m]
-x = linspace(0,0.35,200);    % (Position - theory) [m]
-
 % Fin Properties **FIX ME**
-h = [9, 30, 40];             % [W/m^2 C]
 D = 0.01;                    % (Diameter) [m]
 k = 121;                     % (Conductivity, Brass) [W/m C]
 P = pi * D;                  % (Perimeter) [m]
@@ -88,25 +96,42 @@ Af = pi * D * L;             % (Fin Surface Area) [m^2]
 % Set Tinf -- as measured in lab
 T_inf = 22.5;     % [C]
 
-disp(' ');
-cprintf('comments', '>> DONE.\n');
-
 % break
 %break_msg; dbstack; return;
 
+% x vec for plotting
+xe = 0:0.05:0.35;            % (Position - experiment) [m]
+x = linspace(0,0.35,200);    % (Position - theory) [m]
+
+% export figure names
+str_print = {['h_' num2str(h(1))],['h_' num2str(h(2))], ... 
+    ['h_' num2str(h(3))]};
+
+disp(' ');
+cprintf('comments', '>> DONE.\n');
+
 %% =========== Part 2: Loop over data & Plot ============= 
+% Now, this section performs the computations and plots our data. This is
+% done by looping over each dataset. Therefore, you must complete each of
+% the functions above before continuting on.
+
 
 % loop over stations
-for ii = 1:3 
+for ii = 1:length(fname)
     
+    % make sure files exists
+    if ~exist([pDIR '/' fname{ii}],'file')
+        error(['   FILE: ' fname{ii} ' NOT FOUND! CHECK FILENAME!'])
+    end
+
     % load data
-    raw = xlsread([pDIR '/' xl_files(ii).name]);
-    
+    raw = xlsread([pDIR '/' fname{ii}]);
+
     % get time vector
-    t = raw(:,1);       % [s]
+    t = raw(:,1);         % [s]
     
     % get temps
-    dat = raw(:,2:9);           % [C]
+    dat = raw(:,2:9);     % [C]
     
     % get voltage/current
     V = raw(:,11);        % [V]
@@ -121,14 +146,14 @@ for ii = 1:3
     % set T_base
     Tb = Tm(1);        % [C]
     
-    % determine power input
+    % determine average power input
     PWR(ii) = Vm * Im;
     
-    % The fin excess temperatures
+    % Set fin excess temperatures
     theta_x = Tm - T_inf;
     theta_b = Tb - T_inf;
     
-    % m & M
+    % Calculate m & M
     M = sqrt((h(ii) * P * k * Ac)) * theta_b;
     m = ((h(ii) * P) / (k * Ac))^0.5;
     mL = m * L;
@@ -157,97 +182,46 @@ for ii = 1:3
     p_error_A(ii) = abs(PWR(ii) - qA(ii))/PWR(ii) * 100;
     p_error_B(ii) = abs(PWR(ii) - qB(ii))/PWR(ii) * 100;
     p_error_D(ii) = abs(PWR(ii) - qD(ii))/PWR(ii) * 100;
-    
-    %% PLOTTING
 
-    [bl, rd, org, gry] = setColors();
+    plot_data;
 
-    figure;
-    plot(xe,Tm,'ko','MarkerSize', 7,'MarkerFaceColor','k');
-    hold on;
-    
-    hp = plot(x,TA);
-    set(hp,'Color',bl,'LineStyle','--','LineWidth',2);
-    
-    hp = plot(x,TB);
-    set(hp,'Color',rd,'LineStyle','-.','LineWidth',2);
-    
-    
-    hp = plot(x,TD);
-    set(hp,'Color',org,'LineStyle','-','LineWidth',2);
-    
-    
-    % add labels
-    xlabel('T/C Position [m]');
-    ylabel('Temperature [C]');
-    title(titles{1,ii},'FontSize',18);
-    legend('data','case A', 'case B','case D')
-    grid on
-    
-    % limits
-    xlim([0 0.35]);
-    ylim([20 65]);
-    hold off
-    
     % print figs
-    %print(['figs/' str_print{1,ii}], '-dpng','-r200');
-    
+    if ispc  % if windows
+        print(['figs/' str_print{1,ii}], '-dtiff','-r150');
+    else
+        print(['figs/' str_print{1,ii}], '-dpng','-r150');
+    end
 end
 
+%% PRINT TABLES TO SCREEN
 
-%% OUTPUT
+% set row names
+row_names = {['h = ' num2str(h(1))],['h = ' num2str(h(2))], ... 
+    ['h = ' num2str(h(3))]};
 
-% heat rate
-qAs = round(qA,3);
-qBs = round(qB,3);
-qDs = round(qD,3);
-Pin = round(PWR,3);
-Tq = table(st,Pin',qAs',qBs',qDs','VariableNames',{'Station';'Pin';'qA';'qB';'qD'});
+% print heat rate
+T1 = set_array(PWR, qA, qB, qD, 'round', 3);
+descr = ' Heat Transfer Rate [W]:';
+var_names = {'Pin','qA', 'qB','qD'};
+print_table(T1, descr, row_names, var_names, 'heat_rate');
 
+% print error
+T2 = set_array(p_error_A, p_error_B, p_error_D, 'round', 3);
+descr = '  Error [pct]:';
+var_names = {'qA';'qB';'qD'};
+print_table(T2, descr, row_names, var_names, 'error');
 
-% error
-peA = round(p_error_A,3);
-peB = round(p_error_B,3);
-peD = round(p_error_D,3);
-Pin = round(PWR,3);
-Te = table(st,peA',peB',peD','VariableNames',{'Station';'qA';'qB';'qD'});
+% print efficiency
+T3 = set_array(eta_A, eta_B, eta_D, 'round', 3);
+descr = '  Efficiency [pct]:';
+var_names = {'CaseA';'CaseB';'CaseD'};
+print_table(T3, descr, row_names, var_names, 'efficiency');
 
-
-% efficiency
-eA = round(eta_A,3);
-eB = round(eta_B,3);
-eD = round(eta_D,3);
-Teta = table(st,eA',eB',eD','VariableNames',{'Station';'CaseA';'CaseB';'CaseD'});
-
-% effectiveness
-eA = round(ep_A,3);
-eB = round(ep_B,3);
-eD = round(ep_D,3);
-Tep = table(st,eA',eB',eD','VariableNames',{'Station';'CaseA';'CaseB';'CaseD'});
-
-
-
-%% PRINT to SCREEN
-
-disp(' ')
-disp( ' Heat Rate [W]:')
-disp(' ')
-disp(Tq)
-
-disp(' ')
-disp( ' Error [%]:')
-disp(' ')
-disp(Te)
-
-disp(' ')
-disp( ' Efficiency [%]:')
-disp(' ')
-disp(Teta)
-
-disp(' ')
-disp( ' Effectiveness [-]:')
-disp(' ')
-disp(Tep)
+% print effectiveness
+T4 = set_array(ep_A, ep_B, ep_D, 'round', 3);
+descr = '  Effectiveness [-]:';
+var_names = {'CaseA';'CaseB';'CaseD'};
+print_table(T4, descr, row_names, var_names, 'effectiveness');
 
 
 

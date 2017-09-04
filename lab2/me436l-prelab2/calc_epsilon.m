@@ -1,5 +1,19 @@
 function [ep] = calc_epsilon(q, theta_b, h)
-% CALC_ETA() Returns performace metric: Epsilon
+% CALC_EPSILON - Calculates fin EFFECTIVENESS, Epsilon, as defined by Eqn.
+% 3.86 on page 164 of the textbook.
+%
+% Syntax:  [ep] = calc_eta(q, theta_b, h)
+%
+% Inputs:
+%    q - Fin Heat Rate [W]
+%    theta_b - 'excess' temperature [C]
+%    h - convection coefficient  % [W/m^2 C]
+%
+% Outputs:
+%    ep - [-] 
+%
+%#ok<*NASGU>
+%% MAIN
 
 % Set globals
 global Ac

@@ -1,4 +1,5 @@
-function [bl, rd, org, gry, clr] = setColors()
+function [bl, rd, org, gry, clr] = set_colors()
+% SET_COLORS: Simple function that sets RGB colors
 
 % plotting colors
 clr = [0 114 189; ...     % parula blue

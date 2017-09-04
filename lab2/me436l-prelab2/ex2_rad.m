@@ -4,15 +4,23 @@
 %  INSTRUCTIONS
 %  ------------
 %
-%  This script loads three sets of data and calculations the relative
-%  impact of radiation. A bar graph and table are produced.
+%  This file contains code that will guide you through the RADIATION
+%  portion of the assignment. Be sure to follow the instructions provided
+%  in the attached document.
 %
-%  NOTE: You will need to complete the following functions:
+%  This script performs the following operations:
 %
-%       caseB.m
-%       caseD.m
-%       calc_eta.m
-%       calc_epsilon.m
+%       - Estimates the relative heat lost to radiation and convection
+%       - Computes percentages and plots a bar graph for comparison
+%
+%    NOTE: You will need to complete the following functions:
+%
+%       calc_rad.m
+%       calc_conv.m
+%
+%%
+% Written By: Spencer Pfeifer | Revisions: Paola G. Pittoni
+% Date:   9/2/17
 %
 %#ok<*SNASGU>
 %#ok<*NUSED>
@@ -24,30 +32,50 @@ clear ; close all; clc
 addpath('./lib');
 raw = [];
 
+global IF_PRINT_TABLES
+IF_PRINT_TABLES = 1;
+
 disp(' ')
 disp(' --------------------------------------------------------')
 fprintf('<strong>            Lab 2: Extended Surfaces | Radiation               </strong>\n')
 disp(' --------------------------------------------------------')
 disp(' ')
 
-%% SETUP
+%% =========== Part 0: SETUP / PATHS ============= 
+% In this section you must tell MATLAB where your data is. For each data
+% set, you must provide: (1) name of your excel sheet, (2) h coefficient
+% value, (3) a proper title/description for your plots.  An example is
+% provided to you using the sample dataset.
 
-% set path to folder containing excel sheets
+% set path to folder containing data (best to leave this alone)
 pDIR = './data';
 
-% grab all excel files in directory
-xl_files = dir( [pDIR '/*.xlsx']);
-NX = length(xl_files);
+% set 1
+fname{1,1} = 's1_h9.xlsx';
+h(1) = 9;    % [W/m^2 C]
+titles{1,1} = 'Temperature Distribution: h = 9 [W/m^2 C]';
 
-% Data Info
-% s1/s2 - Natural Convection (h=9)
-% s3/s4 - Low Forced (h = 30)
-% s5/s6 - High Forced (h = 40)
+% set 2
+fname{1,2} = 's3_h30.xlsx';
+h(2) = 30;   % [W/m^2 C]
+titles{1,2} = 'Temperature Distribution: h = 30 [W/m^2 C]';
 
+% set 3
+fname{1,3} = 's5_h40.xlsx';
+h(3) = 40;    % [W/m^2 C]
+titles{1,3} = 'Temperature Distribution: h = 40 [W/m^2 C]';
+
+%% =========== Part 1: Input Properties ============= 
+% Now, using the procedures document for reference, fill in the necessary
+% information below
+
+fprintf(['<strong>' 'PART 0:' '</strong>'])
+fprintf(' Set Properties. \n');
+
+% set globals
 global sigma ep As Tinf
 
-% Fin Properties 
-h = [9, 30, 40];             % [W/m^2 C]
+% Fin Properties **FIX ME**
 D = 0.01;                    % (Diameter) [m]
 
 % Surface area -- Note: we assume 1/3 of the length!
@@ -63,14 +91,30 @@ ep = 0.82;
 % Set Tinf -- as measured in lab
 Tinf = 23.5 + 273;     % [K]
 
+% break
+%break_msg; dbstack; return;
+
+%% =========== Part 2: Loop over data & Plot ============= 
+% Now, this section performs the computations and plots our data. This is
+% done by looping over each dataset. Therefore, you must complete each of
+% the functions above before continuting on.
+
+disp(' ');
+cprintf('comments', '>> DONE.\n');
+
 % loop over stations
-for ii = 1:3
+for ii = 1:length(fname)
     
+    % make sure files exists
+    if ~exist([pDIR '/' fname{ii}],'file')
+        error(['   FILE: ' fname{ii} ' NOT FOUND! CHECK FILENAME!'])
+    end
+
     % load data
-    raw = xlsread([pDIR '/' xl_files(ii).name]);
-    
+    raw = xlsread([pDIR '/' fname{ii}]);
+
     % get temps
-    dat = raw(:,2:9)+ 273;              % [K]
+    dat = raw(:,2:9)+ 273;          % [K]
     
     % take average of last N points (~20)
     N = 20;
@@ -89,44 +133,23 @@ for ii = 1:3
 end
 
 
-%% PLOT BARGRAPH
-figure; hold on;
 
-% set colors
-[bl, rd, org, gry] = setColors();
-wht = [1,1,1];
+%% PRINT FIGURES & TABLES
 
-% set y values
-y = [q_rad(1), q_conv(1);q_rad(2), q_conv(2);q_rad(3), q_conv(3)];
+% plotting
+plot_bargraph;
 
-% plot, set bar colors
-b = bar(y); b(1).FaceColor = rd; b(2).FaceColor = bl;
+% print figs
+if ispc  % if windows
+    print('figs/rad_estimation', '-dtiff','-r150');
+else
+    print('figs/rad_estimation', '-dpng','-r150');
+end
 
-% labels
-xlabh = get(gca,'XLabel');
-set(xlabh,'Position',get(xlabh,'Position') - [0 0.5 0])
-set(gca,'XTick', 1:3,'XTickLabel',{'Free Convection','Med-Forced','High-Forced'})
-ylabel('Power [W]');
-title('Heat Transfer Rate, q [W]','FontSize',20);
-legend('Radiation', 'Convection','Location','northwest')
-grid on
-%ylim([0 2]);
-hold off;
-
-% table
+% print table
+T1 = set_array(q_conv, q_rad, pct_rad, 'round', 3);
+descr = ' Heat Transfer Rate [W]:';
+var_names = {'CONV';'RAD';'PCT_RAD'};
 lbl = {'Free';'Med';'High';};
-r1 = round(q_conv,3);
-r2 = round(q_rad,3);
-r3 = round(pct_rad,3)*100;
-Tr = table(lbl,r1',r2',r3','VariableNames',{'Station';'CONV';'RAD';'PCT_RAD'});
+print_table(T1, descr, lbl, var_names, 'radiation');
 
-%% PRINT to SCREEN
-
-disp(' ')
-disp( ' Heat Transfer Rate [W]:')
-disp(' ')
-disp(Tr)
-
-
-% print PNG
-print('figs/rad_estimation', '-dpng','-r200');

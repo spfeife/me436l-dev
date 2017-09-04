@@ -40,13 +40,10 @@ While this is a public repo, it shouldn't be indexed by google.
 * TeX & Matlab codes are completed. 
 * **[Slides]** Need updated to match tex
 
-### Lab 2 🚫
-* **Rewrite.** Instead of looping over all Excel sheets (was confusing) have them include the path or title of their data.
-    * Currently there is only a 'Part 0' -- expand this to 1, 2, 3 (for each case/station)
+### Lab 2 ⚠️ [Working]
 * [TeX] - Some clarification is needed on how this script works.
 * **Documentation** 
 * Clean up figures and data.
-    * Include data as `.txt` files
 
 
 ### Lab 3 🚫

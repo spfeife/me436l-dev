@@ -1,14 +1,22 @@
 function [T, q] = caseB(x,theta_b, m, M)
-% CASEB() Calculates fin temperature distribution and heat rate (see table
-% 3.4 in text.)
+% CASEB - Calculates fin temperature distribution and heat rate for CASE B
+% in Table 3.4 of the text. NOTE: Use caseA.m as an example.
 %
-% Syntax:  [T,q] = CASEB(x, theta_b, m, M)
+% Syntax:  [T,q] = caseB(x, theta_b, m, M)
 %
 % Inputs:
 %    x - Position vector [m]
 %    theta_b - 'excess' temperature [C]
 %    m - See Table 3.4
 %    M - See Table 3.4
+%
+% Outputs:
+%    T - Temperature distribution [C]
+%    q - Heat Rate [W]
+%
+%#ok<*NASGU>
+ 
+%% MAIN
 
 % Set Globals
 global L T_inf 

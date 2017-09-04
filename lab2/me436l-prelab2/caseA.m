@@ -1,8 +1,8 @@
 function [T, q] = caseA(x,theta_b, m, M, h)
-% CASEA() Calculates fin temperature distribution and heat rate (see table
-% 3.4 in text.)
+% CASEA - Calculates fin temperature distribution and heat rate for CASE A
+% in Table 3.4 of the text.
 %
-% Syntax:  [T,q] = CASEA(x, theta_b, m, M, h)
+% Syntax:  [T,q] = caseA(x, theta_b, m, M)
 %
 % Inputs:
 %    x - Position vector [m]
@@ -10,6 +10,14 @@ function [T, q] = caseA(x,theta_b, m, M, h)
 %    m - See Table 3.4
 %    M - See Table 3.4
 %    h - Convection Coefficient
+% Outputs:
+%    T - Temperature distribution [C]
+%    q - Heat Rate [W]
+%
+%#ok<*NASGU>
+ 
+%% MAIN
+
 
 % Set Globals
 global L T_inf k
