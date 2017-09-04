@@ -27,11 +27,12 @@ Before attempting this pre-lab assignment, it is imperative that you:
 \end{itemize}
 }
 
+
 \section*{Getting Started}
-First, if you have not already, you will need to download the starter code from Bb (located in the `Lab 2' directory) and unzip its contents into the directory where you wish to complete the exercise. Be sure to have completed all of the prerequisites before attempting this assignment.
+First, be sure to download the starter code from Blackboard (Bb), and \textit{extract} (unzip) its contents to the directory in which you wish to complete the exercise\footnote{\textit{Note: when using the Heat Transfer Lab computers, you \ul{must} extract your code to the local hard drive: \texttt{C:/temp/}, NOT to the server (ie., Desktop, Group Folder, \&, etc.)}}. Before attempting, make sure that you have completed all of the \textit{prerequisites} below.
 
 \subsection*{Files included in this exercise:}
-Once you have unzipped the contents of the starter package, you should have the following files:
+Once you have unzipped the contents of the starter package, you should see the following files:
 
 \begin{itemize}
 \renewcommand\labelitemi{-- }
@@ -51,7 +52,7 @@ Once you have unzipped the contents of the starter package, you should have the 
 
 \noindent
 $\star$ indicates files that you will need to complete.\\
-$\dag$ indicates files that are optional.
+$\dag$ indicates files that are optional (at this time).
 
 \n
 Throughout this pre-lab exercise, you will be using the script \bd{\texttt{ex2.m}}, but will only be required to edit \bit{one section}, in which you will need to enter material properties, defined in the \bit{laboratory procedures}.
@@ -63,11 +64,10 @@ Before we can get started, we need to setup our MATLAB environment properly. As 
 
 \subsection{MATLAB Script Outline}
 
-Once your environment is setup, open the file named \bd{\texttt{ex2.m}} and read the instructions at the top of the script. In short, this script will plot your data and fit the math models described in \bit{Table 3.4} to your collected dataset. A brief outline of the script is shown below, followed by a more detailed line-by-line explanation.
-\n
-
+Once your environment is setup, open the file named \bd{\texttt{ex2.m}} and read the instructions at the top of the script. In short, this script will plot your data and fit the math models described in \bit{Table 3.4} to your collected dataset. A brief outline of the script is shown below. The essential parts of this assignment are highlighted in red.
 \IncMargin{1em}
-\begin{algorithm}[t]
+\begin{algorithm}[ht]
+\caption{Extended Surface Model}
 \SetKw{Set}{Set: }
 \SetKw{Call}{Call: }
 \SetKw{Load}{\emph{load: }}
@@ -98,9 +98,39 @@ Once your environment is setup, open the file named \bd{\texttt{ex2.m}} and read
      \Print{ $q$ \& $\epsilon$, $\eta $} to screen\;
 \end{algorithm}
 
-
-Now, in the MATLAB editor, scroll down to the \texttt{SETUP} section. This portion of the script is where the paths to our data are set. More specifically, \texttt{pDIR} is the \it{folder} in which \bit{all three datasets} are stored. You may provide the absolute path to the folder, or simply drag and drop your data into the \texttt{./data} folder.
 \n
+\n
+
+Now, in the MATLAB editor, scroll down to the \texttt{SETUP} section. This portion of the script is where the paths to our data are set. More specifically, \texttt{pDIR} is the \it{folder} in which \bit{all three datasets} are stored. Then, for each dataset you will need to enter three critical pieces of information:
+\begin{enumerate}
+    \item Filename,
+    \item Convection coefficient, $h$,
+    \item Title to describe the data once plotted
+\end{enumerate}
+
+\n
+Examples are provided to you using the sample dataset:
+
+\n
+\begin{lstlisting}[numbers=none]
+% set 1
+fname{1,1} = 's1_h9.xlsx';
+h(1) = 9;    % [W/m^2 C]
+titles{1,1} = 'Temperature Distribution: h = 9 [W/m^2 C]';
+
+% set 2
+fname{1,2} = 's3_h30.xlsx';
+h(2) = 30;   % [W/m^2 C]
+titles{1,2} = 'Temperature Distribution: h = 30 [W/m^2 C]';
+
+% set 3
+fname{1,3} = 's5_h40.xlsx';
+h(3) = 40;    % [W/m^2 C]
+titles{1,3} = 'Temperature Distribution: h = 40 [W/m^2 C]';
+\end{lstlisting}
+
+\n
+Here, it is easiest to simply replace the Excel sheet titles with your own data (be sure that your data has been moved to the \texttt{./data} folder).
 
 \begin{center}
 \begin{tcolorbox}[enhanced, width=14cm, size=tight, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
@@ -111,88 +141,58 @@ Now, in the MATLAB editor, scroll down to the \texttt{SETUP} section. This porti
 \end{tcolorbox}
 \end{center}
 
-As written, this script locates the data`\texttt{data}' folder and grabs \bit{all excel files} therein. The command \texttt{dir( [... '/*.xlsx'])} returns the directory (path), of each file that ends with \texttt{.xlsx}. This is denoted by the `\texttt{ *.xlsx}' syntax, in which the `\texttt{*}' is a \it{wildcard} command meaning, in this case, \it{`grab everything with the following suffix'}. 
-
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[numbers=none]
-%% SETUP
-% set path to folder containing excel sheets
-pDIR = './data';
-
-% grab all excel files in directory
-xl_files = dir( [pDIR '/*.xlsx']);
-NX = length(xl_files);
-\end{lstlisting}
-\end{minipage}
-\n
-The Excel sheet paths are then stored and will be used later in the \it{loop} section. Next, we have a few \it{string} variables that will be used for plotting later. It's important that these are set correctly.
-
-\begin{lstlisting}[numbers=none]
-% plot title
-titles{1,1} = 'Temperature Distribution: h = 9 [W/m^2 C]';
-titles{1,2} = 'Temperature Distribution: h = 30 [W/m^2 C]';
-titles{1,3} = 'Temperature Distribution: h = 40 [W/m^2 C]';
-
-% export figure name
-str_print{1,1} = 'h_09';
-str_print{1,2} = 'h_30';
-str_print{1,3} = 'h_40';
-% set station numbers for each dataset
-st = {'1';'3';'5';};
-\end{lstlisting}
-\n
-
-\Note: The \it{wildcard} command `\texttt{ * }' will automatically sort your filenames based on numerical/alphabetical order. Hence, be sure to name your excel sheets accordingly, so that the titles above are correct.  
 
 \section{Input Properties}
 
-Now, we must input a few properties from the experiment procedures
+Now, we must input a few properties from the experiment procedures.
 
 \begin{lstlisting}[numbers=none]
 %% =========== Part 1: Input Properties ============= 
-% From the procedures document, fill in all of the necessary info
+% Now, using the procedures document for reference, fill in the necessary
+% information below
 \end{lstlisting}
 
-First, we \it{define} a few global variables. These are special variables that once set, will always be available to us. That is, we don't need to pass them in/out of functions.
+First, we \it{define} a few \texttt{global} variables. These are special variables that once set, will \textit{always} be available to us. That is, we don't need to pass them in/out of functions:
 \begin{lstlisting}[numbers=none]
 % set globals
 global D k P L Ac Af T_inf
 \end{lstlisting}
 
-Now, we arrive to the \it{fin properties} section. 
+Now, we arrive to the \it{fin properties} section. Here you must replace the incorrect values or provide the correct equation (as appropriate):
 \n
-\textcolor{dkred}{\bit{To do:}} \it{Using information provided in the procedures document, locate and correct the incorrect values:}
+
 \n
 \begin{lstlisting}[numbers=none]
 % Fin Properties **FIX ME**
-h = [9, 30, 40];             % [W/m^2 C]
-D = 1;                       % (Diameter) [m]
-k = 400;                     % (Conductivity, Brass) [W/m C]
-P = pi * D;                  % (Perimeter) [m]
-L = 1;                       % (Length of fin) [m]
-Ac = 1;                      % (Cross Sectional Area) [m^2]
-Af = pi * D * L;             % (Fin Surface Area) [m^2]
+D = 1; %???                      % (Diameter) [m]
+k = 1; %???                      % (Conductivity, Brass) [W/m C]
+P = pi * D;                      % (Perimeter) [m]
+L = 1; %???                      % (Length of fin) [m]
+Ac = 1; %???                     % (Cross Sectional Area) [m^2]
+Af = pi * D * L;                 % (Fin Surface Area) [m^2]
 
 % Set Tinf -- as measured in lab
-T_inf = 23.5;     % [C]
+T_inf = 22.5;     % [C]
 \end{lstlisting}
 
 \n
 \bit{Note:} The \texttt{Ac} and \texttt{Af} values refer to the \it{cross-sectional area} and \it{total fin surface area}, respectively. These also need to be set correctly. Once this is done, we can move on to the main loop.
 
-\section{Plotting Loop}
-
-This section now uses a simple \texttt{For-Loop} to process each data set automatically. While there are six stations in the lab, this assumes only \bit{three are being processed at once.}
 \n
-As you walk through the inner-workings of the main loop, much of this should look familiar. You do not need to do anything here, but be sure to understand what is being done.
+Now, when you're ready to continue, comment out the following line:
 
 \n
 \begin{lstlisting}[numbers=none]
-%% =========== Part 2: Loop over data & Plot ============= 
-
-% loop over stations
-for ii = 1:3 
+% remove break
+break_msg; dbstack; return;
 \end{lstlisting}
+
+
+\section{Plotting Loop}
+
+This section now uses a simple \texttt{For-Loop} to process each data set automatically. While there are six stations in the lab, this assumes only \bit{\ul{three} are being processed at once.}
+\n
+As you walk through the inner-workings of the main loop, much of this should look familiar. You do not need to do anything here, but be sure to understand what is being done.
 
 \n
 \subsection{Plotting: Cases A, B, D}
@@ -205,7 +205,7 @@ theta_x = Tm - T_inf;
 theta_b = Tb - T_inf;
 \end{lstlisting}
 
-We are now ready to set our \it{theoretical} temperature distributions, as defined by three boundary conditions (BC) at $(x=L)$, shown in \bit{Table 3.4}.
+We are now ready to set our \it{theoretical} temperature distributions, as defined by three boundary conditions (BCs) at $(x=L)$, shown in \bit{Table 3.4}.
 
 \begin{itemize}
     \item [--] \bit{Case A}: Convective BC,
@@ -233,29 +233,12 @@ h_mk = h(ii)/(m*k);
 \end{lstlisting}
 
 \n
-Here, we are setting the values from \bit{Table 3.4 from the textbook}. In summary, we are now inserting the equations the \it{temperature distribution}, $T(x)$ and the \it{heat rate}, $q_f$.  The quantities \texttt{m} \& \texttt{M} have already been defined. What still needs to be done, is for you to complete \bit{Cases B and D}; Case A has already been done as an example.
+Here, we are setting the values from \bit{Table 3.4 from the textbook}. In summary, we are now inserting the equations for the \it{temperature distribution}, $T(x)$ and the \it{heat rate}, $q_f$.  The quantities \texttt{m} \& \texttt{M} have already been defined. What still needs to be done is for you to complete \bit{Cases B and D}; Case A has already been completed as an example.
 \n
-To complete this portion of the exercise, open the files \bit{\texttt{caseB.m}} \& \bit{\texttt{caseD.m}} to complete the expressions below:
+To complete this portion of the exercise, open the files \bit{\texttt{caseB.m}} \& \bit{\texttt{caseD.m}} and insert the correct equation(s) to allow the function to execute properly.
 \n
 
-\begin{lstlisting}[numbers=none]
-function [T, q] = caseD(x,theta_b, m, M)
-% CASED() Calculates fin temperature distribution and heat rate (see table
-% 3.4 in text.)
-\end{lstlisting}
 
-\begin{lstlisting}[numbers=none]
-% ====================== YOUR CODE HERE ======================
-% Instructions: Provide two expressions: Temperature distribution, T, and
-% heat rate, q, from Table 3.4.
-%
-% Note: you will need to solve for T, not theta/theta_b
-% Temperature Distributio 
-T = ????
-
-% Heat Rate
-q = ???
-\end{lstlisting}
 \begin{center}
 \begin{tcolorbox}[enhanced, width=14cm, size=tight, top=-2mm, colback=red!5, colframe=black!50!white, boxrule=0.25pt, boxsep=2mm]
 \n
@@ -317,22 +300,7 @@ In addition, your code should have printed several lines to the command line. To
 
 \n
 \section{Export Figures \& Deliverables}
-
-Now, lets export our figures to PNGs. To do so, scroll down to the following line:
-
-\begin{lstlisting}[numbers=none]
-    % print figs
-    %print(['figs/' str_print{1,ii}], '-dpng','-r200');
-\end{lstlisting}
-
-\n
-Uncomment the second line above. That is, you should see:
-\begin{lstlisting}[numbers=none]
-    % print figs
-    print(['figs/' str_print{1,ii}], '-dpng','-r200');
-\end{lstlisting}
-\n
-Now, once you re-run your script, this will export several PNGs and save them into the \texttt{./figs} folder.
+In the \texttt{./figs} folder, you should see several images that have been exported automatically. These should be inserted into your report, rather than a screenshot. In addition, the tables have been exported as \texttt{.csv} files in the \texttt{./output} folder. You can simply copy/paste these into a nice Excel table for proper presentation.
 
 \begin{formal}
     \begin{deliv} \bit{Export Figures:  } 
@@ -353,7 +321,7 @@ Once these deliverables are completed, print out your document and hand it in at
 
 \section{Radiation (Optional)}
 
-This section is optional and will not be graded as part of the pre-lab assignment. However, since we will be using it throughout the experiment, it has been included.
+This section is optional and will not be graded as part of the pre-lab assignment. However, since we will be using it throughout the experiment (and for your report), it has been included. 
 \n
 
 In this experiment, we are primarily interested in studying the effects of conduction and convection for an \it{extended surface}. That is, heat is transferred through the extended rod via conduction, and is presumed to be dissipated via convection. However, we know that radiation always plays a large role in this too. The question we now seek to answer is \bit{how large} of a role does radiation play? Particularly in relation to \it{convection}. In the sections that follow, we will estimate and compare the heat dissipated via convection and radiation for each of the experiment setups studied above.
@@ -433,34 +401,9 @@ Now, let's implement the above in MATLAB. When completed, you should have a bar 
 \end{figure}
 
 \n
-First, open the file \bd{\texttt{ex2\_rad.m}}. As before, make sure the script can find your data. Be sure that your paths are correct:
+First, open the file \bd{\texttt{ex2\_rad.m}}. As before, make sure the script can find your data. Be sure that your paths are as well as the properties.
 
-\begin{lstlisting}[numbers=none]
-%% SETUP
-% set path to folder containing excel sheets
-pDIR = './data';
-
-% grab all excel files in directory
-xl_files = dir( [pDIR '/*.xlsx']);
-NX = length(xl_files);
-\end{lstlisting}
-\n
-Next, we set several properties:
-
-\begin{lstlisting}[numbers=none]
-% Fin Properties 
-h = [9, 30, 40];             % [W/m^2 C]
-D = 0.01;                    % (Diameter) [m]
-
-% Surface area -- Note: we assume 1/3 of the length!
-L = 0.33 * 0.35;
-As = pi * 0.01 * L;
-
-% boltzmann
-sigma = 5.67e-8;            % [W/(m^2 K^4)]
-\end{lstlisting}
-
-All of the above should be sufficient for our work. However, the next few lines may need to be changed:
+Note, you will need to make adjustments to emissivity as more information comes available to you. For instance, using the FLIR camera to extract a accurate value vs. using an estimation from the textbook.
 \begin{lstlisting}[numbers=none]
 % calibrated ep from FLIR camera (0.78 - 0.82)
 ep = 0.82;
@@ -476,7 +419,7 @@ When performing the experiment, you will need to adjust the ambient air temperat
 Now, we begin the loop over all data sets.
 \begin{lstlisting}[numbers=none]
 % loop over stations
-for ii = 1:3
+for ii = 1:length(fname)
 ...
 \end{lstlisting}
 
@@ -489,7 +432,7 @@ q_rad(ii) = calc_rad(T);
 q_conv(ii)= calc_conv(T,h(ii));
 \end{lstlisting}
 
-To get this working, you need to pen \bd{\texttt{calc\_rad.m}} \& \bd{\texttt{calc\_conv.m}} and insert Eq. \ref{Eq1} \& Eq. \ref{Eq2}, respectively. If executed correctly you should obtain Fig. \ref{fig5} above, as well as the following command line output:
+To get this working, you need to open \bd{\texttt{calc\_rad.m}} \& \bd{\texttt{calc\_conv.m}} and insert Eq. \ref{Eq1} \& Eq. \ref{Eq2} (above), respectively. If executed correctly you should obtain Fig. \ref{fig5} above, as well as the following command line output:
 
 \n
 \begin{lstlisting}[numbers=none]

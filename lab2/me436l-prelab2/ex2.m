@@ -91,7 +91,7 @@ k = 1; %???                      % (Conductivity, Brass) [W/m C]
 P = pi * D;                      % (Perimeter) [m]
 L = 1; %???                      % (Length of fin) [m]
 Ac = 1; %???                     % (Cross Sectional Area) [m^2]
-Af = pi * D * L;             % (Fin Surface Area) [m^2]
+Af = pi * D * L;                 % (Fin Surface Area) [m^2]
 
 % Set Tinf -- as measured in lab
 T_inf = 22.5;     % [C]
@@ -114,7 +114,6 @@ cprintf('comments', '>> DONE.\n');
 % Now, this section performs the computations and plots our data. This is
 % done by looping over each dataset. Therefore, you must complete each of
 % the functions above before continuting on.
-
 
 % loop over stations
 for ii = 1:length(fname)
