@@ -40,10 +40,9 @@ While this is a public repo, it shouldn't be indexed by google.
 * TeX & Matlab codes are completed. 
 * **[Slides]** Need updated to match tex
 
-### Lab 2 ⚠️ [Working]
-* [TeX] - Some clarification is needed on how this script works.
-* **Documentation** 
-* Clean up figures and data.
+### Lab 2 ✅ [Complete]
+* TeX & Matlab codes are completed. 
+* **[Slides]** Need updated to match tex
 
 
 ### Lab 3 🚫
