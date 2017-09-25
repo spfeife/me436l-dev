@@ -1,8 +1,8 @@
 function  [] = plot_data(t,T, T_lcm, T1, titl)
-% PLOT_DATA: simple plotting function
+% PLOT_DATA: simple plotting function for simplicity
 
 % set colors
-[bl, rd, ~, gry] = setColors();
+[bl, rd, ~, gry] = set_colors();
 
 figure;
 h1 = plot(t, T,'o');

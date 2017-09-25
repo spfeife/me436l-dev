@@ -1,8 +1,8 @@
 function  [] = plot_fo(Fo, theta_star)
-% PLOT_DATA: simple plotting function
+% PLOT_DATA: simple plotting function for simplicity
 
 % set colors
-[~, rd, ~, gry] = setColors();
+[~, rd, ~, gry] = set_colors();
 
 figure;
 h1 = plot(Fo, theta_star,'o');hold on
