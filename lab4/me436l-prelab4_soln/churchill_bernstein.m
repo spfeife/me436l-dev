@@ -1,14 +1,18 @@
 function [Nu, Re, Pr, nu] = churchill_bernstein(Tf, V)
-% Calculates Nusselt number via the Churchill & Bernstein correlation
-%   see p458 in Fundamentals of Heat and Mass Transfer, Incropera, Dewitt
-%   7th edition
+% CHURCHILL_BERNSTEIN() - Calculates Nusselt number via the CHURCHILL-BERNSTEIN
+%   correlation see p458 in Fundamentals of Heat and Mass Transfer,
+%   Incropera, Dewitt 7e
 %
 % Syntax:  [Nu, Re, Pr, nu] = hilpert(Tf, V)
 %
 % Inputs:
 %    Tf - Film Temp [K]
 %    V - Velocity [m/s]
+%
+%#ok<*NASGU>
+%% MAIN
 
+% Set Globals
 global D;
 
 % ====================== YOUR CODE HERE ======================
@@ -18,9 +22,9 @@ global D;
 % Hint: it may be easier to break this correlation up into several parts
 
 % evaluate properties at Tf
-nu = airProp2(Tf,'ny');
+nu = airProp2(Tf, 'ny');
 Re = (V * D)/nu;
-Pr = airProp2(Tf,'Pr');
+Pr = airProp2(Tf, 'Pr');
 
 
 % evaluate correlation

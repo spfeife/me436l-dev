@@ -45,19 +45,13 @@ While this is a public repo, it shouldn't be indexed by google.
 * **[Slides]** Need updated to match tex
 
 
-### Lab 3 🚫
-* Code works well, needs more instructions and documentation
-* [TeX] - Instructions require more details
-* * **Documentation** 
-* Clean up figures and data.
-    * Include data as `.txt` files
+### Lab 3 ✅ [Complete]
+* Working.
+* Update to match Box
 
-### Lab 4 🚫
+### Lab 4 ⚠️ [Partially Complete]
 * **No Tex File/Instructions.**
-* Code works well, needs simplified - badly.
-* * * **Documentation** 
-* Clean up figures and data.
-    * Include data as `.txt` files
+* Matlab Code is working
 
 ### Lab 5 🚫
 *[Does Not Exist!]*

@@ -1,21 +1,72 @@
-function [T] = set_array(varargin)
+function [A] = set_array(varargin)
+% PRINT_TABLE - simple function that rounds-off values before filling an
+% array.
+%
+% DESCR: This is used inconjunction with PRINT_TABLE and is simply used to
+% save space & round-off values.
+%
+% Syntax:  [A] = set_array(Var1,Var2, ... , VarN);
+%
+%   OR     [A] = set_array(Var1,Var2, ... , VarN, 'round', n);
+%
+%   This last syntax will round each varable to n decimal places
+%
+% Default Round: round(var, 2)
+%
+% Inputs:
+%    Var1 - variable 1
+%    Var2 - variable 2
+%      .
+%      .
+%    VarN - variable N
+%    str  - 'round' -- if this variable is a 'char' then the above values
+%                      will be rounded & next argument the number of places
+%     n   - (Last Arg) number of decimals in which to round.
+%
+% Outputs:
+%    A - Array (matrix)
+%
+%% SETUP
 
-% is filename a char
+FLAG_ROW = 0;
+
+% Default round value
+rnd = 2;
+
+% No. of arguments (from end) to ignore.
+idx = 0;
+
+% If 2nd to last variable is a char
 if (ischar(varargin{end-1}))
     rnd = varargin{end};
     idx = 2;
-else
-    rnd = 2;
-    idx = 0;
 end
 
+% check if variable is a scalar or an array
+n = length(varargin{1});
+
+% check if var is column or row vec
+if isrow(varargin{1}), FLAG_ROW = 1; end
+    
+
 % preallocate
-T = zeros(1,nargin-idx);
+A = zeros(n, nargin-idx);
 
 % set table array
 for jj = 1:nargin-idx
-    T(1,jj) = round(varargin{jj}, rnd);
+    
+    if FLAG_ROW
+        A(:,jj) = round(varargin{jj}', rnd);
+    else
+        A(:,jj) = round(varargin{jj}, rnd);
+    end
+    
 end
 
+
+
+
 end
+
+
 

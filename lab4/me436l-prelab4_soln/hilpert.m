@@ -1,21 +1,24 @@
 function [Nu, Re, Pr, nu] = hilpert(Tf, V)
-% Calculates Nusselt number via the Hilpert correlation
+% HILPERT() - Calculates Nusselt number via HILPERT correlation
 %   see p458 in Fundamentals of Heat and Mass Transfer, Incropera, Dewitt
-%   7th edition
+%   7e
 %
 % Syntax:  [Nu, Re, Pr, nu] = hilpert(Tf, V)
 %
 % Inputs:
 %    Tf - Film Temp [K]
 %    V - Velocity [m/s]
+%
+%#ok<*NASGU>
+%% MAIN
 
 % Set Globals
 global D;
 
 % evaluate properties at Tf
-nu = airProp2(Tf,'ny');
+nu = airProp2(Tf, 'ny');
 Re = (V * D)/nu;
-Pr = airProp2(Tf,'Pr');
+Pr = airProp2(Tf, 'Pr');
 
 % get C & m (table 7.2)
 if Re > 0.4 && Re <= 4

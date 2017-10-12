@@ -4,16 +4,22 @@
 %  INSTRUCTIONS
 %  ------------
 %
-%  Complete the script below to perform the analysis for this experiment
+%  This file contains code that will guide you through the assignment. Be
+%  sure to follow the instructions provided in the accompanying document.
 %
-%       ** BE SURE TO INPUT THE CORRECT PROPERTIES ** 
-%
-%  NOTE: You will need to complete the following functions:
+%  NOTE(1): You will need to complete the following functions:
 %
 %       hilpert.m
 %       zukauskas.m
 %       churchill_bernstein.m
 %       calc_uncertainty.m
+%
+%  NOTE(2): This script will automatically print figures in the /figs
+%       folder and it will output tables to .csv in the /output folder
+%
+%%
+% Written By: Spencer Pfeifer | Revisions: Paola G. Pittoni
+% Date:   10/12/17
 %
 %#ok<*SNASGU>
 %#ok<*NUSED>
@@ -23,8 +29,13 @@
 %% Initialization
 clear ; close all; clc
 addpath('./lib');
-addpath('./data')
-raw = [];
+addpath('./data');
+
+% initialize globals
+global T_inf V I As
+global D
+global IF_PRINT_TABLES
+IF_PRINT_TABLES = 1;
 
 disp(' ')
 disp(' --------------------------------------------------------')
@@ -32,23 +43,32 @@ fprintf('<strong>                Lab 4: External Convection               </stro
 disp(' --------------------------------------------------------')
 disp(' ')
 
-%% PROPERTIES / SETUP
+%% =========== PART 0: PROPERTIES // SETUP  =============
+% In this section you must tell MATLAB where your data is and provide the
+% relevant material specifications and properties. That is, for each data
+% set, you must provide:
+%   (1) Name of your excel sheet
+%   (2) Material properties and specifications. Take note of units!
+%
+%   NOTE: This assumes that your data is stored in the /data folder.
+%   Otherwise, you must provide the full path.
 
-% set to 1 if you wish to print the figs to png
-IF_PRINT_FIGS = 0;
-
-global T_inf V I As
-global D
+fprintf(['<strong>' 'PART 0:' '</strong>'])
+fprintf(' Set Properties. \n');
 
 % dimensions
 D = 0.000;          % [m]
 L = 0.000;          % [m]
 
+% surface area
+Ad = pi * D;          % [m^2]
+As = Ad * L;          % [m^2]
+
 % boltzman & emissivity
 ep = 0.0;         % [ ]      
 sigma = 00;       % [W/m2 K^4]
 
-% air temp
+% Ambient air temp - convert to K
 T_inf = 00 + 273.15;     % [K]
 
 % input velocities
@@ -58,24 +78,24 @@ v = v_mph .* 00;       % [m/s]
 % air thermal conductivity
 kf = airProp2(T_inf,'k');   % [W/m-K]
 
-% surface area
-Ad = pi * D;          % [m^2]
-As = Ad * L;          % [m^2]
 delta = zeros(1,4);
 
 % break
+%break_msg; dbstack; return;
 
-disp('Make sure the properties are set correctly')
-break_msg; dbstack; return;
-%% load data
+% make sure data exists
+if ~exist(sname,'file')
+    error(['   FILE: ' sname ' NOT FOUND! CHECK FILENAME!'])
+end
+cprintf('comments', '>> DONE.\n');
 
-% INPUT names of excel files
+
+%% =========== PART 1: COMPUTATIONS =============
+% This section performs the computations and plots our data. This is
+% done by looping over each velocity. Therefore, you must complete each of
+% the functions above before continuting on.
+%
 % NOTE: This script loops over the TABS in the excel sheet.
-
-%sname = 's1_Al.xlsx';
-sname = 's2_Brass.xlsx';
-%sname = 's3_SS.xlsx';
-titles = {'20mph', '30mph','40mph','50mph'};
 
 % loop over velocities
 for ii = 1:4
@@ -93,225 +113,83 @@ for ii = 1:4
     
     % set mean temp,
     Tm = dat(2:3);
+    Tm1(ii) = Tm(1);
+    Tm2(ii) = Tm(2);
     
-    % set Ts & Tf, convert to kelvins
+    % set Ts & Tf, convert to K
     Ts = (Tm(1) + Tm(2))/2;     % [C]
     Ts = Ts + 273.15;           % [K]
     Tf = (Ts + T_inf)/2;        % [K]
     
-    %% Energy balance & Estimate h_exp
+    %% ENERGY BALANCE // ESTIMATE h_exp
     
     % power-in and radiation
     q_in = P;
     q_rad = sigma * ep * As * (Ts^4 - T_inf^4);
     
-    % use C-B for Nu estimation
-    Nu = hilpert(Tf, v(ii));
+    % Use C-B OR Hilpert for Nu estimation
+    %Nu = hilpert(Tf, v(ii));
+    Nu = churchill_bernstein(Tf, v(ii));
+    
+    % Estimated h
     h = Nu * kf/D;
     
+    % Estimated q_conv & q_cond
     q_conv = h * As * (Ts - T_inf);
     q_cond = q_in - (q_conv + q_rad);
     
-    % pct loss
+    % Estimate pct loss
     pct_conv(ii) = q_conv/q_in;
     pct_cond(ii) = q_cond/q_in;
     pct_rad(ii)  = q_rad/q_in;
-    pct_loss = round(abs(pct_rad(ii)) + abs(pct_cond(ii)),2);
-     %= 0.1
-    % newtons law of cooling:
+    
+    % Since this is an estimate, we round it off to 2 decimal places
+    pct_loss = round(abs(pct_rad(ii)) + abs(pct_cond(ii)), 2);
+    
+    % Estimate h_exp via Newton's law of cooling:
     h_exp(ii) = q_in * (1-pct_loss)/(As * (Ts - T_inf));
     
     % load table
     T1(ii,:) = set_array(P, q_conv, q_rad, q_cond,'round', 2);
     T2(ii,:) = set_array(pct_conv(ii), pct_rad(ii), pct_cond(ii), pct_loss,'round', 6);
     
-    %% Hilpert Correlation
-    
+    %% CALCULATE CORRELATIONS
     % calculate h from correlations
+    
+    % Hilpert Correlation
     [Nu, Re, Pr, ~] = hilpert(Tf, v(ii));
     h_hil(ii) = Nu * kf/D;
     
-    % load table
+    % Fill table for output
     Th(ii,:) = set_array(h_hil(ii), Nu, Re, Pr,'round', 2);
     
-    %% Zukauskas Correlation
+    % Zukauskas Correlation
     [Nu, Re, Pr, ~] = zukauskas(T_inf, Ts, v(ii));
     h_zuk(ii) = Nu * kf/D;
-    
-    % load table
     Tz(ii,:) = set_array(h_zuk(ii), Nu, Re, Pr,'round', 2);
     
-    %% Churchill-Bernstein Correlation
+    % Churchill-Bernstein Correlation
     [Nu, Re, Pr, nu] = churchill_bernstein(Tf, v(ii));
     h_church(ii) =  Nu * kf/D;
-    
-    % load table
     Tc(ii,:) = set_array(h_church(ii), Nu, Re, Pr,'round', 2);
-
-    %% CALCULATE ERROR
     
+    %% CALCULATE ERROR & UNCERTAINTY
     err_hil(ii) = abs(h_hil(ii) - h_exp(ii))/h_exp(ii);
     err_zuk(ii) = abs(h_zuk(ii) - h_exp(ii))/h_exp(ii);
     err_church(ii) = abs(h_church(ii) - h_exp(ii))/h_exp(ii);
     
-    % load table
+    % fill table
     Te(ii,:) = set_array(err_hil(ii), err_zuk(ii), err_church(ii),'round', 6);
     
-    %% uncertainty // propagation of error
-
-    % delta(ii) = calc_uncertainty(Tm,pct_conv(ii));
-
+    % Uncertainty // propagation of error
+    delta(ii) = calc_uncertainty(Tm, pct_conv(ii));
+    
 end
 
 
+%% OUTPUT
 
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%        END       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-%% TABLES & OUTPUT
-
-row_names = {'20 mph','30 mph','40 mph','50 mph'};
-
-% print heat rate
-descr = 'Heat Transfer rate:';
-var_names = {'Pin','qconv', 'qrad','qcond'};
-print_table(T1, descr, row_names, var_names, 'heat_rate');
-
-% Pct loss per HT mode
-descr = 'Percentage loss by heat transfer mode:';
-var_names = {'conv','rad','cond','totalLosses'};
-
-for ii = 1:4
-    a(:,ii) = cellstr(num2str(T2(:,ii)*100,'%5.2f%%'));
-end
-
-print_table(a, descr, row_names, var_names, 'pct_loss');
-
-% Hilpert Correlation
-descr = 'Hilpert Correlation:';
-var_names = {'h','Nu','Re','Pr'};
-print_table(Th, descr, row_names, var_names, 'hilpert');
-
-% Zuk Correlation
-descr = 'Zukauskas Correlation:';
-print_table(Th, descr, row_names, var_names, 'zuk');
-
-% CB Correlation
-descr = 'Churchill-Bernstein Correlation:';
-print_table(Tc, descr, row_names, var_names, 'CB');
-
-
-% Pct error per correlation
-for ii = 1:3
-    b(:,ii) = cellstr(num2str(Te(:,ii)*100,'%5.2f%%'));
-end
-
-descr = 'Percent Error:';
-var_names = {'hExp','Hil','Zuk','CB'};
-
-T = table; T.hExp = round(h_exp',2); T.Hilpert = b(:,1);
-T.Zukauskas = b(:,2); T.CB = b(:,3);
-print_table(T, descr, row_names, var_names, 'pct_error');
-
-% H Exp + delta
-if delta(1) ~= 0
-    T = table; T.hExp = h_exp'; T.Uncertainty = delta';
-    descr = 'Uncertainty';
-    var_names = {'hExp','Delta'};
-    print_table(T, descr, row_names, var_names, 'uncertainty');
-end
-%% PLOTTING
-
-% colors
-bl = [0 114 189]./256;      % parula blue
-rd = [161 0 31]./256;       % parula red
-org = [217 83 25]./256;     % parula orange
-
-
-% plot h
-h = plot(v_mph, h_exp,'o-'); hold on;
-set(h,'Color', 'k' , 'MarkerFaceColor','k', 'MarkerSize',5, 'LineWidth',1.75);
-
-h = plot(v_mph, h_hil,'s-.');
-set(h,'Color', bl, 'MarkerSize',10, 'LineWidth',1.25);
-
-h = plot(v_mph, h_zuk,'v-.');
-set(h,'Color', rd, 'MarkerSize',10, 'LineWidth',1.25);
-
-h = plot(v_mph, h_church,'>-.');
-set(h,'Color', org, 'MarkerSize',10, 'LineWidth',1.25);
-
-
-xlabel('Velocity [mph]');
-ylabel('h [W/m2 K]');
-title('Convection Coefficient','FontSize',20);
-legend('Exp.', 'Churchill-Bernstein', 'Location','Northwest')
-legend('Exp.', 'Hilpert','Zukauskas', 'Churchill-Bernstein', 'Location','Northwest')
-grid on
-hold off
-
-% print figs
-if IF_PRINT_FIGS
-    print(['figs/' 'conv_coeff'], '-dpng','-r150');
-end
-
-% plot error
-figure;
-h = plot(v_mph, err_hil*100,'s-.'); hold on
-set(h,'Color', bl, 'MarkerSize',10, 'LineWidth',1.25);
-h = plot(v_mph, err_zuk*100,'v-.');
-set(h,'Color', rd, 'MarkerSize',10, 'LineWidth',1.25);
-
-h = plot(v_mph, err_church*100,'>-.');
-set(h,'Color', org, 'MarkerSize',10, 'LineWidth',1.25);
-
-xlabel('Velocity [mph]');
-ylabel('% error');
-title('Error','FontSize',20);
-legend('Hilpert' ,'Churchill-Bernstein', 'Location','Northwest')
-legend('Hilpert','Zukauskas', 'Churchill-Bernstein', 'Location','Northwest')
-grid on
-hold off
-%ylim([0 10])
-
-% print figs
-if IF_PRINT_FIGS
-    print(['figs/' 'err'], '-dpng','-r150');
-end
-
-% plot percent loss by mode
-figure;
-y = [pct_cond', pct_conv', pct_rad'].*100;
-b = bar(v_mph, y); hold on
-
-b(3).FaceColor = bl;
-b(1).FaceColor = rd;
-b(2).FaceColor = org;
-
-xlabel('Velocity [mph]');
-ylabel('% HT Loss');
-title('HT Mode Comparison','FontSize',20);
-l = legend('Conduction','Convection', 'Radiation', 'Location','Southoutside');
-set(l,'Orientation','horizontal','Location','southoutside');
-
-y1 = 0:0.05:0.15;
-y2 = 0.20:0.1:1.0;
-%yticks([y1 y2].*100)
-
-%ytickformat('percentage')
-
-grid on
-hold off
-
-% print figs
-if IF_PRINT_FIGS
-    print(['figs/' 'pct_mode'], '-dpng','-r150');
-end
+print_all_tables;
+plot_h;
+plot_err;
+plot_pct_loss;

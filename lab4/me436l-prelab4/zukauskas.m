@@ -1,25 +1,26 @@
 function [Nu, Re, Pr, nu] = zukauskas(T_inf, Ts, V)
-% Calculates Nusselt number via the Zukauskas correlation
+% ZUKAUSKAS() - Calculates Nusselt number via the ZUKAUSKAS correlation
 %   see p458 in Fundamentals of Heat and Mass Transfer, Incropera, Dewitt
-%   7th edition
+%   7e
 %
-% Syntax:  [Nu, Re, Pr, nu] = zukauskas(T_inf,Ts, V)
+% Syntax:  [Nu, Re, Pr, nu] = zukauskas(T_inf, Ts, V)
 %
 % Inputs:
 %    T_inf  - ambient air temp [K]
 %    T_s    - surface temp [K]
 %    V      - Velocity [m/s]
-%%
+%
+%#ok<*NASGU>
+%% MAIN
 
 % Set Globals
 global D;
 
 % evaluate properties at T_inf, except Pr_s
-nu  = airProp2(T_inf,'ny');
+nu  = airProp2(T_inf, 'ny');
 Re  = (V * D)/nu;
-Pr  = airProp2(T_inf,'Pr');
-Prs = airProp2(Ts,'Pr');
-
+Pr  = airProp2(T_inf, 'Pr');
+Prs = airProp2(Ts, 'Pr');
 
 % sanity checks
 if Pr < 0.7 || Pr > 500

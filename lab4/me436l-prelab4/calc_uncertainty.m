@@ -1,15 +1,24 @@
 function delta = calc_uncertainty(Tm, pct_conv)
-% CALC_UNCERTAINTY:  Performs the uncertainty analysis (see slides)
+% CALC_UNCERTAINTY() - Performs the uncertainty analysis (see slides)
+%
+% Syntax:  [delta] = calc_uncertainty(Tm, pct_conv)
+%
+% Inputs:
+%    Tm - Mean temp [K]
+%    pct_conv - Convection percentage 
+%
+%#ok<*NASGU>
+%% MAIN
 
 % set globals
 global T_inf V I As
 
 % epsilon values
 eI = 0.0 %???;
-eV = % 0.1;
-eT = % 0.1;
+eV = 0.0 %???;
+eT = 0.0 %???;
 
-% convert back to [C]
+% NOTICE: CONVERT BACK TO [C]
 Tinf = T_inf - 273.15;    % [C]
 T_1 = Tm(1);              % [C]
 T_2 = Tm(2);              % [C]
