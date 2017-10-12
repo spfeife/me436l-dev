@@ -1,0 +1,57 @@
+\documentclass[11pt, letterpaper]{article} 
+\input{include/structure.sty} 
+\graphicspath{{./gfx/}}
+\usepackage[boxed]{algorithm2e}
+\usepackage{xfrac}
+
+\title{ \textsc{Prelab Exercise 4: \\ External Convection} \\ {\large  \color{darkgray} ME 436 Heat Transfer}}
+
+\begin{document}
+\date{}
+\maketitle
+\thispagestyle{firstpage} 
+
+\section*{Introduction}
+
+The primary objective of this experiment is to...
+\n
+This pre-lab assignment will act as a guide towards creating a mathematical model before attending lab --  saving critical in-class time for performing experiments and analyzing data. 
+
+\section*{Prerequisites}
+Before attempting this pre-lab assignment, it is imperative that you:
+{\small
+\begin{itemize}
+    \item Review \bit{textbook sections 6.3, 7.1 \& 7.4}, including \bit{Example 7.4},
+    \item Review \bit{experiment procedures}, and
+    \item Watch the \bit{pre-lab videos} on Blackboard (Bb).
+\end{itemize}
+}
+
+
+\section*{Getting Started}
+First, be sure to download the starter code from Blackboard (Bb), and \textit{extract} (unzip) its contents to the directory in which you wish to complete the exercise\footnote{\textit{Note: When using the Heat Transfer Lab computers, you \ul{must} extract your code to the local hard drive: \texttt{C:/temp/}, NOT to the server (ie., Desktop, Group Folder, \&, etc.)}}. Before attempting, make sure that you have completed all of the \textit{prerequisites} below.
+
+\subsection*{Files included in this exercise:}
+Once you have unzipped the contents of the starter package, you should see the following files:
+
+\begin{itemize}
+\renewcommand\labelitemi{-- }
+   \item \bd{\texttt{ex4.m}}
+    \item \texttt{/lib}
+\renewcommand\labelitemi{[$\star$]}
+    \item \texttt{hilpert.m}
+    \item \texttt{zukauskas.m} 
+    \item \texttt{churchill\_bernstein.m} 
+    \item \texttt{calc\_uncertainty.m} 
+\end{itemize}
+
+\noindent
+$\star$ indicates files that you will need to complete.
+
+
+\setcounter{section}{-1}
+\section{Environment Setup}
+Before we can get started, we need to setup our MATLAB environment properly. As always, if using the laboratory computers, be sure to be running your code from the \texttt{C:\textbackslash temp} directory, and also make sure you have unzipped your code properly. Otherwise you may receive `\texttt{./lib not found}' errors.
+
+
+\end{document}
