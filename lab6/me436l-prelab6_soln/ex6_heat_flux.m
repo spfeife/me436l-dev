@@ -131,7 +131,7 @@ fprintf('Done. \n\n');
 % for equations. Then, we compute the error with published values.
 
 fprintf(['<strong>' 'PART 2:' '</strong>'])
-fprintf('Calculating Heat Flux... \n');
+fprintf(' Calculating Heat Flux... \n');
 
 % loop over distances, calculate heat flux
 for ii = 1:length(L)

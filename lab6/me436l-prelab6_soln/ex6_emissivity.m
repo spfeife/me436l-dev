@@ -32,6 +32,10 @@ clear ; close all; clc
 addpath('./lib');
 addpath('./data');
 
+% automatically export images (./figs)
+global IF_PRINT_FIGS;
+IF_PRINT_FIGS = 1;
+
 disp(' ')
 disp(' --------------------------------------------------------')
 fprintf('<strong>                Lab 6: Radiation: Emissivity               </strong>\n')
@@ -49,7 +53,7 @@ disp(' ')
 %   Otherwise, you must provide the full path.
 
 fprintf(['<strong>' 'PART 0:' '</strong>'])
-fprintf(' Set Properties. \n');
+fprintf(' Setting Properties... \n');
 
 % dimensions
 L = 0.200;      % [m]
@@ -82,17 +86,20 @@ stitle = 'Polished Copper';
 %stitle = 'stainless';
 %stitle = 'aluminum';
 
-% break
-%break_msg; dbstack; return;
-
-%% =========== PART 1: PLOT DATA =============
-
-
 % make sure data exists
 if ~exist(pdata,'file')
     error(['   FILE: ' sname ' NOT FOUND! CHECK FILENAME!'])
 end
-cprintf('comments', '>> DONE.\n');
+cprintf('comments', '>> DONE.\n\n');
+
+% break
+%break_msg; dbstack; return;
+
+%% =========== PART 1: PLOT DATA =============
+%  We start by first plotting the noisey transient data
+
+fprintf(['<strong>' 'PART 1:' '</strong>'])
+fprintf(' Plotting Data... \n');
 
 % load data
 [dat, rmin, nSheets] = preloader(pdata);
@@ -127,16 +134,21 @@ q_avg = max(qa(end-30:end));             % [W/m^2]
 Ti = mean(Ti_avg(end-30:end));           % [C]
 
 % plot q
-plot_q(qmat);
-title(stitle)
+plot_q(qmat, stitle);
 
 % convert Temp to K
 Ti = Ti + 273.15;       % [K]
 
+% break
+%break_msg; dbstack; return;
+fprintf('Done. \n\n');
 
 %% =========== PART 2: CALCULATIONS ============= 
 % Now we perform the calculations for View Factor and Emissivity. See text
 % for equations. Then, we compute the error with published values.
+
+fprintf(['<strong>' 'PART 2:' '</strong>'])
+fprintf(' Calculating Emissivity... \n');
 
 % view factor
 S = 1 + (1 + Rj^2)/Ri^2;
@@ -151,6 +163,7 @@ ep_max = q_max/(Fji * sigma * Ti^4);
 err = abs(ep - ep_pub)/ep_pub * 100;
 err2 = abs(ep_max - ep_pub)/ep_pub * 100;
 
+fprintf('Done. \n\n');
 
 %% OUTPUT
 print_to_screen;
